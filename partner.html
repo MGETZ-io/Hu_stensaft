@@ -44,8 +44,16 @@
             border-radius: 8px;
             box-shadow: 0px 0px 5px rgba(255, 255, 255, 0.2);
         }
+        select {
+            padding: 8px;
+            margin: 5px;
+            width: 80%;
+        }
     </style>
     <script>
+        // Simulierte Liste der Partner (kann später dynamisch sein)
+        var partners = ["Partner1", "Partner2", "Partner3", "Partner4", "Partner5"];
+
         function checkPassword() {
             var password = document.getElementById("password").value;
             if (password === "2202") {
@@ -79,20 +87,45 @@
                 tournamentDetails.innerHTML = `<h3>Solo Anmeldung</h3><p>Du hast dich als Einzelspieler angemeldet. Viel Glück!</p>`;
                 sendDiscord("Solo Turnieranmeldung", user); // Solo-Anmeldung an Discord senden
             } else if (mode === "team") {
-                tournamentDetails.innerHTML = `<h3>Team Anmeldung</h3><p>Gib die Namen der Teammitglieder ein:</p><input type="text" id="teamMembers" placeholder="Spieler 1, Spieler 2, etc."><br><button class="btn" onclick="submitTournament(user, 'Team Anmeldung')">Team anmelden</button>`;
+                tournamentDetails.innerHTML = `<h3>Team Anmeldung</h3><p>Wähle bis zu 3 Teammitglieder aus:</p>`;
+                // Dynamische Erstellung der Dropdowns
+                var selectHTML = '<select id="teamMember1">';
+                selectHTML += partners.map(partner => `<option value="${partner}">${partner}</option>`).join('');
+                selectHTML += '</select><br>';
+                
+                selectHTML += '<select id="teamMember2">';
+                selectHTML += partners.map(partner => `<option value="${partner}">${partner}</option>`).join('');
+                selectHTML += '</select><br>';
+                
+                selectHTML += '<select id="teamMember3">';
+                selectHTML += partners.map(partner => `<option value="${partner}">${partner}</option>`).join('');
+                selectHTML += '</select><br>';
+
+                selectHTML += `<button class="btn" onclick="submitTournament(user, 'Team Anmeldung')">Team anmelden</button>`;
+                tournamentDetails.innerHTML = selectHTML;
             }
         }
 
         function submitTournament(user, action) {
             var mode = document.querySelector('input[name="tournamentMode"]:checked').value;
-            var teamMembers = mode === "team" ? document.getElementById("teamMembers").value : "";
-            
-            if (mode === "team" && teamMembers.trim() === "") {
-                alert("Bitte gib die Namen der Teammitglieder ein.");
-                return;
+            var teamMembers = [];
+
+            // Teammitgliedernamen aus den Dropdowns holen
+            if (mode === "team") {
+                teamMembers.push(document.getElementById("teamMember1").value);
+                teamMembers.push(document.getElementById("teamMember2").value);
+                teamMembers.push(document.getElementById("teamMember3").value);
+
+                // Teamgröße auf maximal 3 beschränken
+                teamMembers = teamMembers.filter(member => member !== "none");
+
+                if (teamMembers.length < 1) {
+                    alert("Bitte wähle mindestens ein weiteres Teammitglied.");
+                    return;
+                }
             }
 
-            sendDiscord(action, user, teamMembers); // Team oder Solo an Discord senden
+            sendDiscord(action, user, teamMembers.join(", ")); // Team oder Solo an Discord senden
         }
 
         function endPartnership() {
