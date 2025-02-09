@@ -48,7 +48,7 @@
     <script>
         function checkPassword() {
             var password = document.getElementById("password").value;
-            if (password === "HuStenPartner2025") {
+            if (password === "2202") {
                 document.getElementById("login").style.display = "none";
                 document.getElementById("dashboard").style.display = "block";
             } else {
@@ -86,6 +86,12 @@
         function submitTournament(user, action) {
             var mode = document.querySelector('input[name="tournamentMode"]:checked').value;
             var teamMembers = mode === "team" ? document.getElementById("teamMembers").value : "";
+            
+            if (mode === "team" && teamMembers.trim() === "") {
+                alert("Bitte gib die Namen der Teammitglieder ein.");
+                return;
+            }
+
             sendDiscord(action, user, teamMembers); // Team oder Solo an Discord senden
         }
 
