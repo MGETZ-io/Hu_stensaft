@@ -70,21 +70,6 @@
             .catch(() => alert("Fehler beim Senden an Discord!"));
         }
 
-        function sendEmail(action, user) {
-            var emailForm = document.createElement("form");
-            emailForm.action = "https://formsubmit.co/DEINE_EMAIL@EXAMPLE.COM";
-            emailForm.method = "POST";
-            
-            var inputAction = document.createElement("input");
-            inputAction.type = "hidden";
-            inputAction.name = "message";
-            inputAction.value = "Neue Partner-Aktion von " + user + ": " + action;
-            
-            emailForm.appendChild(inputAction);
-            document.body.appendChild(emailForm);
-            emailForm.submit();
-        }
-
         function showTournamentOptions() {
             var user = document.getElementById("username").value;
             var mode = document.querySelector('input[name="tournamentMode"]:checked').value;
@@ -92,6 +77,7 @@
 
             if (mode === "solo") {
                 tournamentDetails.innerHTML = `<h3>Solo Anmeldung</h3><p>Du hast dich als Einzelspieler angemeldet. Viel Glück!</p>`;
+                sendDiscord("Solo Turnieranmeldung", user);
             } else if (mode === "team") {
                 tournamentDetails.innerHTML = `<h3>Team Anmeldung</h3><p>Gib die Namen der Teammitglieder ein:</p><input type="text" id="teamMembers" placeholder="Spieler 1, Spieler 2, etc."><br><button class="btn" onclick="submitTournament(user, 'Team Anmeldung')">Team anmelden</button>`;
             }
@@ -104,7 +90,6 @@
                 action = action + " mit Spielern: " + teamMembers;
             }
             sendDiscord(action, user);
-            sendEmail(action, user);
         }
 
         function endPartnership() {
@@ -133,9 +118,7 @@
         
         <h2>🌟 Wähle eine Aktion:</h2>
         <button class="btn" onclick="sendDiscord('Neuer Partner', document.getElementById('username').value)">Neuer Partner (Discord)</button>
-        <button class="btn" onclick="sendEmail('Neuer Partner', document.getElementById('username').value)">Neuer Partner (E-Mail)</button>
         <button class="btn" onclick="sendDiscord('Event-Anmeldung', document.getElementById('username').value)">Event-Anmeldung (Discord)</button>
-        <button class="btn" onclick="sendEmail('Event-Anmeldung', document.getElementById('username').value)">Event-Anmeldung (E-Mail)</button>
         
         <h2>🔚 Partnerschaft beenden:</h2>
         <button class="btn" onclick="endPartnership()">Partnerschaft beenden</button>
