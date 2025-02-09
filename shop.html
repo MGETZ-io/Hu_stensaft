@@ -129,7 +129,7 @@
 
   // Produkt 1 - 500ml Dose
   document.getElementById('add-to-cart1').addEventListener('click', () => {
-    const status = document.getElementById('status1').textContent;
+    const status = document.getElementById('status2').textContent;
     if (status === 'Verfügbar') {
       cart.push({ name: '500ml Dose', price: 1.49 });
       updateCart();
