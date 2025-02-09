@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hu_stensaft Partner-Dashboard</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #121212;
+            color: white;
+            text-align: center;
+        }
+        .container {
+            max-width: 500px;
+            margin: auto;
+            padding: 20px;
+            background-color: #222;
+            border-radius: 10px;
+            box-shadow: 0px 0px 10px rgba(255, 255, 255, 0.2);
+        }
+        .hidden {
+            display: none;
+        }
+        .btn {
+            padding: 10px 20px;
+            margin: 10px;
+            background-color: #FF4500;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            cursor: pointer;
+            display: inline-block;
+        }
+        input {
+            padding: 8px;
+            margin: 5px;
+            width: 80%;
+        }
+    </style>
+    <script>
+        function checkPassword() {
+            var password = document.getElementById("password").value;
+            if (password === "HuStenPartner2025") {
+                document.getElementById("login").style.display = "none";
+                document.getElementById("dashboard").style.display = "block";
+            } else {
+                alert("Falsches Passwort!");
+            }
+        }
+
+        function sendDiscord(action) {
+            var webhookURL = "DEIN_DISCORD_WEBHOOK_URL";
+            var message = {
+                content: "**Neuer Partner-Event! 🎉**\nAktion: " + action + "\nVon: @everyone"
+            };
+
+            fetch(webhookURL, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(message)
+            }).then(() => alert("Aktion gesendet: " + action))
+            .catch(() => alert("Fehler beim Senden an Discord!"));
+        }
+
+        function sendEmail(action) {
+            var emailForm = document.createElement("form");
+            emailForm.action = "https://formsubmit.co/DEINE_EMAIL@EXAMPLE.COM";
+            emailForm.method = "POST";
+            
+            var inputAction = document.createElement("input");
+            inputAction.type = "hidden";
+            inputAction.name = "message";
+            inputAction.value = "Neue Partner-Aktion: " + action;
+            
+            emailForm.appendChild(inputAction);
+            document.body.appendChild(emailForm);
+            emailForm.submit();
+        }
+    </script>
+</head>
+<body>
+
+    <div class="container" id="login">
+        <h1>🔒 Hu_stensaft Partner Login</h1>
+        <p>Bitte gib das Passwort ein:</p>
+        <input type="password" id="password">
+        <button class="btn" onclick="checkPassword()">Login</button>
+    </div>
+
+    <div class="container hidden" id="dashboard">
+        <h1>🚀 Hu_stensaft Partner-Dashboard</h1>
+        <p>Wähle eine Aktion:</p>
+        <button class="btn" onclick="sendDiscord('Neuer Partner')">Neuer Partner (Discord)</button>
+        <button class="btn" onclick="sendDiscord('Event-Anmeldung')">Event-Anmeldung (Discord)</button>
+        <button class="btn" onclick="sendEmail('Neuer Partner')">Neuer Partner (E-Mail)</button>
+        <button class="btn" onclick="sendEmail('Event-Anmeldung')">Event-Anmeldung (E-Mail)</button>
+    </div>
+
+</body>
+</html>
