@@ -56,10 +56,10 @@
             }
         }
 
-        function sendDiscord(action, user) {
+        function sendDiscord(action, user, teamMembers = "") {
             var webhookURL = "https://ptb.discord.com/api/webhooks/1338233815365324831/IpdEFyCrlBDTvGqxbVLzBShF5n0I1Sx9XDq5_Di5UCLOcErMx08Dc-yAZmPDiWyndPdq";
             var message = {
-                content: "**Aktion von " + user + "**\nAktion: " + action + "\nVon: @everyone"
+                content: "**Aktion von " + user + "**\nAktion: " + action + (teamMembers ? "\nMit Team: " + teamMembers : "") + "\nVon: @everyone"
             };
 
             fetch(webhookURL, {
@@ -77,7 +77,7 @@
 
             if (mode === "solo") {
                 tournamentDetails.innerHTML = `<h3>Solo Anmeldung</h3><p>Du hast dich als Einzelspieler angemeldet. Viel Glück!</p>`;
-                sendDiscord("Solo Turnieranmeldung", user);
+                sendDiscord("Solo Turnieranmeldung", user); // Solo-Anmeldung an Discord senden
             } else if (mode === "team") {
                 tournamentDetails.innerHTML = `<h3>Team Anmeldung</h3><p>Gib die Namen der Teammitglieder ein:</p><input type="text" id="teamMembers" placeholder="Spieler 1, Spieler 2, etc."><br><button class="btn" onclick="submitTournament(user, 'Team Anmeldung')">Team anmelden</button>`;
             }
@@ -85,11 +85,8 @@
 
         function submitTournament(user, action) {
             var mode = document.querySelector('input[name="tournamentMode"]:checked').value;
-            if (mode === "team") {
-                var teamMembers = document.getElementById("teamMembers").value;
-                action = action + " mit Spielern: " + teamMembers;
-            }
-            sendDiscord(action, user);
+            var teamMembers = mode === "team" ? document.getElementById("teamMembers").value : "";
+            sendDiscord(action, user, teamMembers); // Team oder Solo an Discord senden
         }
 
         function endPartnership() {
