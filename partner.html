@@ -37,6 +37,13 @@
             margin: 5px;
             width: 80%;
         }
+        #news {
+            margin-top: 20px;
+            background-color: #333;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0px 0px 5px rgba(255, 255, 255, 0.2);
+        }
     </style>
     <script>
         function checkPassword() {
@@ -49,10 +56,10 @@
             }
         }
 
-        function sendDiscord(action) {
+        function sendDiscord(action, user) {
             var webhookURL = "https://ptb.discord.com/api/webhooks/1338233815365324831/IpdEFyCrlBDTvGqxbVLzBShF5n0I1Sx9XDq5_Di5UCLOcErMx08Dc-yAZmPDiWyndPdq";
             var message = {
-                content: "**Neuer Partner-Event! 🎉**\nAktion: " + action + "\nVon: @everyone"
+                content: "**Aktion von " + user + "**\nAktion: " + action + "\nVon: @everyone"
             };
 
             fetch(webhookURL, {
@@ -63,7 +70,7 @@
             .catch(() => alert("Fehler beim Senden an Discord!"));
         }
 
-        function sendEmail(action) {
+        function sendEmail(action, user) {
             var emailForm = document.createElement("form");
             emailForm.action = "https://formsubmit.co/DEINE_EMAIL@EXAMPLE.COM";
             emailForm.method = "POST";
@@ -71,11 +78,37 @@
             var inputAction = document.createElement("input");
             inputAction.type = "hidden";
             inputAction.name = "message";
-            inputAction.value = "Neue Partner-Aktion: " + action;
+            inputAction.value = "Neue Partner-Aktion von " + user + ": " + action;
             
             emailForm.appendChild(inputAction);
             document.body.appendChild(emailForm);
             emailForm.submit();
+        }
+
+        function showTournamentOptions() {
+            var user = document.getElementById("username").value;
+            var mode = document.querySelector('input[name="tournamentMode"]:checked').value;
+            var tournamentDetails = document.getElementById("tournamentDetails");
+
+            if (mode === "solo") {
+                tournamentDetails.innerHTML = `<h3>Solo Anmeldung</h3><p>Du hast dich als Einzelspieler angemeldet. Viel Glück!</p>`;
+            } else if (mode === "team") {
+                tournamentDetails.innerHTML = `<h3>Team Anmeldung</h3><p>Gib die Namen der Teammitglieder ein:</p><input type="text" id="teamMembers" placeholder="Spieler 1, Spieler 2, etc."><br><button class="btn" onclick="submitTournament(user, 'Team Anmeldung')">Team anmelden</button>`;
+            }
+        }
+
+        function submitTournament(user, action) {
+            var mode = document.querySelector('input[name="tournamentMode"]:checked').value;
+            if (mode === "team") {
+                var teamMembers = document.getElementById("teamMembers").value;
+                action = action + " mit Spielern: " + teamMembers;
+            }
+            sendDiscord(action, user);
+            sendEmail(action, user);
+        }
+
+        function endPartnership() {
+            window.location.href = "index.html";
         }
     </script>
 </head>
@@ -90,11 +123,28 @@
 
     <div class="container hidden" id="dashboard">
         <h1>🚀 Hu_stensaft Partner-Dashboard</h1>
-        <p>Wähle eine Aktion:</p>
-        <button class="btn" onclick="sendDiscord('Neuer Partner')">Neuer Partner (Discord)</button>
-        <button class="btn" onclick="sendDiscord('Event-Anmeldung')">Event-Anmeldung (Discord)</button>
-        <button class="btn" onclick="sendEmail('Neuer Partner')">Neuer Partner (E-Mail)</button>
-        <button class="btn" onclick="sendEmail('Event-Anmeldung')">Event-Anmeldung (E-Mail)</button>
+        <p>Gib deinen Benutzernamen ein:</p>
+        <input type="text" id="username" placeholder="Dein Benutzername">
+        
+        <h2>🎮 Turnieranmeldung</h2>
+        <input type="radio" name="tournamentMode" value="solo" onclick="showTournamentOptions()"> Solo
+        <input type="radio" name="tournamentMode" value="team" onclick="showTournamentOptions()"> Team
+        <div id="tournamentDetails"></div>
+        
+        <h2>🌟 Wähle eine Aktion:</h2>
+        <button class="btn" onclick="sendDiscord('Neuer Partner', document.getElementById('username').value)">Neuer Partner (Discord)</button>
+        <button class="btn" onclick="sendEmail('Neuer Partner', document.getElementById('username').value)">Neuer Partner (E-Mail)</button>
+        <button class="btn" onclick="sendDiscord('Event-Anmeldung', document.getElementById('username').value)">Event-Anmeldung (Discord)</button>
+        <button class="btn" onclick="sendEmail('Event-Anmeldung', document.getElementById('username').value)">Event-Anmeldung (E-Mail)</button>
+        
+        <h2>🔚 Partnerschaft beenden:</h2>
+        <button class="btn" onclick="endPartnership()">Partnerschaft beenden</button>
+
+        <div id="news">
+            <h2>📰 Neuigkeiten:</h2>
+            <p><strong>Neues Turnier:</strong> Ein großes Turnier wird bald stattfinden! Melde dich jetzt an!</p>
+            <p><strong>Neuer Partner:</strong> Willkommen unserem neuesten Partner Hu_stensaft!</p>
+        </div>
     </div>
 
 </body>
