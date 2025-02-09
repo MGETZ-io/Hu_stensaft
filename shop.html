@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Online Store</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f4f4f4;
+    }
+    header {
+      background-color: #333;
+      color: white;
+      text-align: center;
+      padding: 1rem;
+    }
+    .container {
+      display: flex;
+      justify-content: space-around;
+      flex-wrap: wrap;
+      margin: 2rem;
+    }
+    .product {
+      background-color: white;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      padding: 1rem;
+      margin: 1rem;
+      width: 250px;
+      text-align: center;
+      border-radius: 8px;
+    }
+    .product img {
+      width: 100%;
+      height: auto;
+      border-radius: 8px;
+    }
+    .product h2 {
+      font-size: 1.5rem;
+      margin-top: 1rem;
+    }
+    .product p {
+      font-size: 1rem;
+      color: #333;
+      margin-bottom: 1rem;
+    }
+    .price {
+      font-size: 1.25rem;
+      font-weight: bold;
+      color: #000;
+      margin-bottom: 1rem;
+    }
+    .btn {
+      background-color: #4CAF50;
+      color: white;
+      padding: 0.5rem 1rem;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    .btn:hover {
+      background-color: #45a049;
+    }
+    .out-of-stock {
+      background-color: #ccc;
+      cursor: not-allowed;
+    }
+    #cart {
+      position: fixed;
+      bottom: 10px;
+      right: 10px;
+      background-color: #333;
+      color: white;
+      padding: 1rem;
+      border-radius: 8px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+    #cart ul {
+      list-style-type: none;
+      padding: 0;
+    }
+    #cart ul li {
+      margin-bottom: 0.5rem;
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>Willkommen in unserem Online-Shop</h1>
+  <p>Bestellen Sie unsere Produkte einfach online!</p>
+</header>
+
+<div class="container">
+  <!-- Produkt 1: 500ml Dose -->
+  <div class="product" id="product1">
+    <img src="https://via.placeholder.com/250x250.png?text=500ml+Dose" alt="500ml Dose">
+    <h2>500ml Dose</h2>
+    <p>Erfrischendes Getränk in praktischer 500ml Dose.</p>
+    <p class="price">1,49€ + 0,25€ Pfand</p>
+    <button class="btn" id="add-to-cart1">In den Warenkorb</button>
+    <p id="status1">Verfügbar</p>
+  </div>
+
+  <!-- Produkt 2: 1,5L Flasche -->
+  <div class="product" id="product2">
+    <img src="https://via.placeholder.com/250x250.png?text=1,5L+Flasche" alt="1,5L Flasche">
+    <h2>1,5L Flasche</h2>
+    <p>Großflasche für mehr Durst mit 1,5 Litern Inhalt.</p>
+    <p class="price">4,50€ + Pfand</p>
+    <button class="btn" id="add-to-cart2">In den Warenkorb</button>
+    <p id="status2">Ausverkauft</p>
+  </div>
+</div>
+
+<!-- Warenkorb -->
+<div id="cart">
+  <h3>Warenkorb</h3>
+  <ul id="cart-items">
+    <li>Warenkorb ist leer</li>
+  </ul>
+  <button class="btn" id="checkout">Zur Kasse</button>
+</div>
+
+<script>
+  const cart = [];
+
+  // Produkt 1 - 500ml Dose
+  document.getElementById('add-to-cart1').addEventListener('click', () => {
+    const status = document.getElementById('status1').textContent;
+    if (status === 'Verfügbar') {
+      cart.push({ name: '500ml Dose', price: 1.49 });
+      updateCart();
+    }
+  });
+
+  // Produkt 2 - 1,5L Flasche
+  document.getElementById('add-to-cart2').addEventListener('click', () => {
+    const status = document.getElementById('status2').textContent;
+    if (status === 'Verfügbar') {
+      cart.push({ name: '1,5L Flasche', price: 4.50 });
+      updateCart();
+    }
+  });
+
+  // Warenkorb aktualisieren
+  function updateCart() {
+    const cartItemsList = document.getElementById('cart-items');
+    cartItemsList.innerHTML = ''; // Warenkorb leeren
+
+    if (cart.length === 0) {
+      cartItemsList.innerHTML = '<li>Warenkorb ist leer</li>';
+    } else {
+      cart.forEach(item => {
+        const li = document.createElement('li');
+        li.textContent = `${item.name} - ${item.price}€`;
+        cartItemsList.appendChild(li);
+      });
+    }
+  }
+
+  // Kasse
+  document.getElementById('checkout').addEventListener('click', () => {
+    if (cart.length === 0) {
+      alert('Ihr Warenkorb ist leer!');
+    } else {
+      let total = cart.reduce((acc, item) => acc + item.price, 0);
+      alert(`Gesamtbetrag: ${total.toFixed(2)}€`);
+    }
+  });
+</script>
+
+</body>
+</html>
