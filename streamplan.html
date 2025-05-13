@@ -2,7 +2,7 @@
 <html lang="de">
 <head>
   <meta charset="UTF-8">
-  <title>Streamplan</title>
+  <title>Streamplan mit Splash Screen</title>
   <style>
     * {
       margin: 0;
@@ -13,20 +13,66 @@
     html, body {
       width: 100%;
       height: 100%;
-      background-color: #000; /* optional: schwarzer Hintergrund */
+      background-color: #000;
+    }
+
+    #splash {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: #000;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 2;
+    }
+
+    #main-content {
+      display: none;
+      width: 100%;
+      height: 100%;
       display: flex;
       justify-content: center;
       align-items: center;
     }
 
-    img {
+    #main-content img {
       max-width: 100%;
       max-height: 100%;
       object-fit: contain;
     }
+
+    video {
+      max-width: 100%;
+      max-height: 100%;
+    }
   </style>
 </head>
 <body>
-  <img src="streamplan.png" alt="Streamplan">
+  <!-- Splash Screen mit Video -->
+  <div id="splash">
+    <video id="splashVideo" autoplay muted>
+      <source src="Slide_Reveal_(Red)[1].webm" type="video/webm">
+      Dein Browser unterstützt kein WebM-Video.
+    </video>
+  </div>
+
+  <!-- Hauptinhalt nach Splash -->
+  <div id="main-content">
+    <img src="streamplan.png" alt="Streamplan">
+  </div>
+
+  <script>
+    const video = document.getElementById('splashVideo');
+    const splash = document.getElementById('splash');
+    const main = document.getElementById('main-content');
+
+    video.onended = () => {
+      splash.style.display = "none";
+      main.style.display = "flex";
+    };
+  </script>
 </body>
 </html>
