@@ -43,18 +43,14 @@
         <p>Exklusive Vorteile & Specials für unsere Partner.</p>
         <a href="partner.html" class="btn">Zum Partner-Dashboard</a>
 
-
-         <h2>🌟 Gönn dir jetzt Merch🌟</h2>
-        <p></p>
+        <h2>🌟 Gönn dir jetzt Merch 🌟</h2>
         <a href="wm.html" class="btn">Shop</a>
       
-        
         <h2>🌟 Werde Hu_stensaft Partner! 🌟</h2>
         <p>Exklusive Vorteile & Specials für unsere Partner.</p>
         <a href="https://agency.hustensaft.org/" class="btn">Bewerben</a>
 
-        <h2> Impressum </h2>
-        <p></p>
+        <h2>Impressum</h2>
         <a href="impressum.html" class="btn">Impressum</a>
         
         <h2>📱 Folge mir auf Social Media:</h2>
@@ -62,16 +58,48 @@
         <a href="https://discord.gg/y8hgebrq84" class="btn">Discord</a>
     </div>
 
+    <!-- Freshchat Widget -->
+    <script>
+      function initFreshChat() {
+        window.fcWidget.init({
+          token: "53af1bc8-1cc5-4953-abca-a0cc3d4bb894",
+          host: "https://hustensaft.freshchat.com"
+        });
+      }
+
+      function initialize(i, t) {
+        var e;
+        if (i.getElementById(t)) {
+          initFreshChat();
+        } else {
+          e = i.createElement("script");
+          e.id = t;
+          e.async = true;
+          e.src = "https://hustensaft.freshchat.com/js/widget.js";
+          e.onload = initFreshChat;
+          i.head.appendChild(e);
+        }
+      }
+
+      function initiateCall() {
+        initialize(document, "Freshchat-js-sdk");
+      }
+
+      if (window.addEventListener) {
+        window.addEventListener("load", initiateCall, false);
+      } else if (window.attachEvent) {
+        window.attachEvent("load", initiateCall);
+      }
+    </script>
+
+    <!-- Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-TK0MMRWX31"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-TK0MMRWX31');
+    </script>
+
 </body>
 </html>
-
-<!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-TK0MMRWX31"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-
-  gtag('config', 'G-TK0MMRWX31');
-</script>
- 
