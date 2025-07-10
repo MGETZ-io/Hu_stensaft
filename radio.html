@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <title>🎧 BigTimeFM Live – hustensaft.org/radio</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(to bottom, #0c0c1c, #1c1c3c);
+      color: #fff;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      text-align: center;
+    }
+
+    h1 {
+      font-size: 2.5rem;
+      margin-bottom: 10px;
+      color: #00bfff;
+      text-shadow: 0 0 12px #00bfff;
+    }
+
+    #playerContainer {
+      background: #1a1a2e;
+      padding: 30px;
+      border-radius: 20px;
+      box-shadow: 0 0 20px rgba(0,0,0,0.4);
+      width: 90%;
+      max-width: 400px;
+    }
+
+    .btn {
+      background-color: #00bfff;
+      border: none;
+      color: black;
+      padding: 14px 28px;
+      border-radius: 50px;
+      font-size: 1rem;
+      cursor: pointer;
+      box-shadow: 0 0 10px #00bfff;
+      margin-top: 20px;
+    }
+
+    .btn:hover {
+      background-color: #00a0d4;
+    }
+
+    #metadata {
+      margin-top: 20px;
+      font-size: 1.1rem;
+      line-height: 1.6;
+    }
+
+    .label {
+      color: #ccc;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>🎧 BigTimeFM Live</h1>
+  <div id="playerContainer">
+    <button id="playPauseBtn" class="btn">▶️ Play</button>
+    <div id="metadata">
+      <div><span class="label">Song:</span> <span id="song">Wird geladen...</span></div>
+      <div><span class="label">Künstler:</span> <span id="artist">–</span></div>
+    </div>
+  </div>
+
+  <audio id="audio" preload="none">
+    <source src="https://strea.bigtimefm.de/stream.mp3" type="audio/mpeg">
+  </audio>
+
+  <script>
+    const audio = document.getElementById('audio');
+    const btn = document.getElementById('playPauseBtn');
+    const songSpan = document.getElementById('song');
+    const artistSpan = document.getElementById('artist');
+
+    let isPlaying = false;
+
+    btn.addEventListener('click', () => {
+      if (isPlaying) {
+        audio.pause();
+        btn.textContent = '▶️ Play';
+      } else {
+        audio.play();
+        btn.textContent = '⏸️ Pause';
+      }
+      isPlaying = !isPlaying;
+    });
+
+    async function fetchMetadata() {
+      try {
+        const res = await fetch('https://strea.bigtimefm.de/status-json.xsl');
+        const data = await res.json();
+        const raw = data.icestats?.source?.title || '';
+        if (raw.includes(' - ')) {
+          const [artist, title] = raw.split(' - ');
+          artistSpan.textContent = artist.trim();
+          songSpan.textContent = title.trim();
+        } else {
+          songSpan.textContent = raw || 'Unbekannt';
+          artistSpan.textContent = 'Unbekannt';
+        }
+      } catch (e) {
+        console.warn("Fehler beim Laden der Metadaten", e);
+        songSpan.textContent = 'nicht verfügbar';
+        artistSpan.textContent = 'nicht verfügbar';
+      }
+    }
+
+    fetchMetadata();
+    setInterval(fetchMetadata, 15000); // alle 15 Sekunden aktualisieren
+  </script>
+
+</body>
+</html>
