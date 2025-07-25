@@ -4,23 +4,32 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>BTFM Tower</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap" rel="stylesheet" />
   <style>
     body {
       margin: 0;
-      font-family: 'Segoe UI', sans-serif;
-      background-color: #111;
-      color: #fff;
+      font-family: 'Poppins', sans-serif;
+      background-color: #0a0a0a;
+      color: #eaeaea;
     }
 
     header {
-      background: linear-gradient(to right, #ff4d00, #ff8000);
-      padding: 20px;
+      background: linear-gradient(to right, #ff0050, #8200ff);
+      padding: 30px 20px;
       text-align: center;
+      box-shadow: 0 0 20px #ff0050;
     }
 
     header h1 {
       margin: 0;
-      font-size: 2.5em;
+      font-size: 3em;
+      color: #fff;
+      text-shadow: 0 0 10px #ff0050, 0 0 20px #8200ff;
+    }
+
+    header p {
+      font-size: 1.2em;
+      color: #eaeaea;
     }
 
     nav {
@@ -29,10 +38,15 @@
     }
 
     nav a {
-      color: #ff8000;
+      color: #ff0050;
       text-decoration: none;
       margin: 0 15px;
       font-weight: bold;
+      transition: color 0.3s;
+    }
+
+    nav a:hover {
+      color: #ffffff;
     }
 
     .slider {
@@ -41,7 +55,7 @@
       position: relative;
       overflow: hidden;
       border-radius: 15px;
-      box-shadow: 0 0 20px rgba(255, 128, 0, 0.3);
+      box-shadow: 0 0 30px #8200ff;
     }
 
     .slides {
@@ -59,15 +73,49 @@
       margin: 40px auto;
       background-color: #1a1a1a;
       padding: 20px;
-      border-left: 5px solid #ff8000;
+      border-left: 5px solid #ff0050;
+      box-shadow: 0 0 15px #ff0050;
+    }
+
+    .player-section {
+      max-width: 800px;
+      margin: 40px auto;
+      padding: 20px;
+      background-color: #111;
+      border-left: 5px solid #8200ff;
+    }
+
+    .community-box {
+      max-width: 800px;
+      margin: 40px auto;
+      padding: 20px;
+      background-color: #111;
+      border-left: 5px solid #ff0050;
+    }
+
+    .btn-discord {
+      display: inline-block;
+      margin-top: 10px;
+      padding: 10px 20px;
+      background: linear-gradient(to right, #ff0050, #8200ff);
+      color: #fff;
+      text-decoration: none;
+      border-radius: 5px;
+      font-weight: bold;
     }
 
     footer {
       text-align: center;
       padding: 20px;
-      background-color: #1a1a1a;
+      background-color: #111;
       margin-top: 40px;
       color: #999;
+      font-size: 0.9em;
+    }
+
+    audio {
+      width: 100%;
+      margin-top: 10px;
     }
   </style>
 </head>
@@ -80,7 +128,7 @@
   <nav>
     <a href="https://www.twitch.tv/hu_stensaft" target="_blank">Twitch</a>
     <a href="https://bigtimefm.de" target="_blank">BigTimeFM.de</a>
-    <a href="https://www.curseforge.com/minecraft/modpacks/create-live-6" target="_blank">Modpack: Create Live 6</a>
+    <a href="https://www.curseforge.com/minecraft/modpacks/create-live-6" target="_blank">Modpack</a>
   </nav>
 
   <div class="slider" id="slider">
@@ -94,9 +142,22 @@
   <div class="info-box">
     <h2>Was ist der BTFM Tower?</h2>
     <p>
-      Der BTFM Tower ist das offizielle Leuchtturmprojekt von BigTimeFM in der Welt von
-      <strong>Create Live 6</strong>. Hoch hinaus – mit Technik, Stil und Community!
+      Der BTFM Tower ist das offizielle Leuchtturmprojekt von BigTimeFM in der Welt von <strong>Create Live 6</strong>. Hoch hinaus – mit Technik, Stil und Community!
     </p>
+  </div>
+
+  <div class="player-section">
+    <h2>🎶 Jetzt Live auf BigTimeFM</h2>
+    <audio controls autoplay>
+      <source src="https://strea.bigtimefm.de/stream.mp3" type="audio/mpeg">
+      Dein Browser unterstützt kein Audio-Tag.
+    </audio>
+  </div>
+
+  <div class="community-box">
+    <h2>🧑‍🤝‍🧑 Unsere Community</h2>
+    <p>Join den Discord, chatte mit uns live oder schick deine Songwünsche!</p>
+    <a href="https://discord.gg/2BQfJWeYmV" target="_blank" class="btn-discord">Discord beitreten</a>
   </div>
 
   <footer>
