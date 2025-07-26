@@ -27,11 +27,6 @@
       text-shadow: 0 0 10px #ff0050, 0 0 20px #8200ff;
     }
 
-    header p {
-      font-size: 1.2em;
-      color: #eaeaea;
-    }
-
     nav {
       text-align: center;
       margin: 20px 0;
@@ -49,54 +44,22 @@
       color: #ffffff;
     }
 
-    .slider {
-      max-width: 800px;
-      margin: 40px auto;
-      position: relative;
-      overflow: hidden;
-      border-radius: 15px;
-      box-shadow: 0 0 30px #8200ff;
-    }
-
-    .slides {
-      display: flex;
-      transition: transform 0.5s ease-in-out;
-    }
-
-    .slides img {
-      width: 100%;
-      border-radius: 15px;
-    }
-
-    .info-box,
-    .player-section,
-    .community-box {
-      max-width: 800px;
-      margin: 40px auto;
-      padding: 20px;
-      background-color: #111;
-      border-left: 5px solid #ff0050;
-    }
-
-    .player-section {
-      border-left-color: #8200ff;
-    }
-
-    .btn-discord,
     .btn-login {
-      display: inline-block;
-      margin-top: 10px;
-      padding: 10px 20px;
-      background: linear-gradient(to right, #ff0050, #8200ff);
-      color: #fff;
+      display: block;
+      width: max-content;
+      margin: 40px auto;
+      padding: 12px 24px;
+      font-size: 1em;
+      background-color: #5865f2;
+      color: white;
       text-decoration: none;
-      border-radius: 5px;
+      border-radius: 8px;
       font-weight: bold;
-      transition: background 0.3s;
+      transition: 0.3s;
     }
 
     .btn-login:hover {
-      background: linear-gradient(to right, #8200ff, #ff0050);
+      background-color: #4752c4;
     }
 
     footer {
@@ -106,11 +69,6 @@
       margin-top: 40px;
       color: #999;
       font-size: 0.9em;
-    }
-
-    audio {
-      width: 100%;
-      margin-top: 10px;
     }
   </style>
 </head>
@@ -126,52 +84,14 @@
     <a href="https://www.curseforge.com/minecraft/modpacks/create-live-6" target="_blank">Modpack</a>
   </nav>
 
-  <div class="slider" id="slider">
-    <div class="slides" id="slides">
-      <img src="BTFMT1.png" alt="Bild 1" />
-      <img src="BTFMT2.png" alt="Bild 2" />
-      <img src="BTFMT3.png" alt="Bild 3" />
-    </div>
-  </div>
-
-  <div class="info-box">
-    <h2>Was ist der BTFM Tower?</h2>
-    <p>
-      Der BTFM Tower ist das offizielle Leuchtturmprojekt von BigTimeFM in der Welt von <strong>Create Live 6</strong>. Hoch hinaus – mit Technik, Stil und Community!
-    </p>
-  </div>
-
-  <div class="player-section">
-    <h2>🎶 Jetzt Live auf BigTimeFM</h2>
-    <audio controls autoplay>
-      <source src="https://stream.bigtimefm.de/stream.mp3" type="audio/mpeg">
-      Dein Browser unterstützt kein Audio-Tag.
-    </audio>
-  </div>
-
-  <div class="community-box">
-    <h2>🧑‍🤝‍🧑 Unsere Community</h2>
-    <p>Join den Discord, chatte mit uns live oder schick deine Songwünsche!</p>
-    <a href="https://discord.gg/2BQfJWeYmV" target="_blank" class="btn-discord">Discord beitreten</a>
-    <br /><br />
-    <a class="btn-login" href="https://discord.com/oauth2/authorize?client_id=1398608131885633638&redirect_uri=https%3A%2F%2Fbackend.hustensaft.org%2Fcallback.html&response_type=token&scope=identify">
-      🚪 Mit Discord einloggen - Nur Für Verwaltung!
-    </a>
-  </div>
+  <a
+    class="btn-login"
+    href="https://discord.com/api/oauth2/authorize?client_id=1398608131885633638&redirect_uri=https%3A%2F%2Fhustensaft.org%2FBTFM_Tower%2Fcallback.html&response_type=token&scope=identify">
+    Mit Discord einloggen
+  </a>
 
   <footer>
     &copy; 2025 BTFM Tower · Projekt von BigTimeFM
   </footer>
-
-  <script>
-    let currentIndex = 0;
-    const slides = document.getElementById('slides');
-    const slideCount = slides.children.length;
-
-    setInterval(() => {
-      currentIndex = (currentIndex + 1) % slideCount;
-      slides.style.transform = `translateX(-${currentIndex * 100}%)`;
-    }, 4000);
-  </script>
 </body>
 </html>
