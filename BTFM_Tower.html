@@ -68,23 +68,8 @@
       border-radius: 15px;
     }
 
-    .info-box {
-      max-width: 800px;
-      margin: 40px auto;
-      background-color: #1a1a1a;
-      padding: 20px;
-      border-left: 5px solid #ff0050;
-      box-shadow: 0 0 15px #ff0050;
-    }
-
-    .player-section {
-      max-width: 800px;
-      margin: 40px auto;
-      padding: 20px;
-      background-color: #111;
-      border-left: 5px solid #8200ff;
-    }
-
+    .info-box,
+    .player-section,
     .community-box {
       max-width: 800px;
       margin: 40px auto;
@@ -93,7 +78,12 @@
       border-left: 5px solid #ff0050;
     }
 
-    .btn-discord {
+    .player-section {
+      border-left-color: #8200ff;
+    }
+
+    .btn-discord,
+    .btn-login {
       display: inline-block;
       margin-top: 10px;
       padding: 10px 20px;
@@ -102,6 +92,11 @@
       text-decoration: none;
       border-radius: 5px;
       font-weight: bold;
+      transition: background 0.3s;
+    }
+
+    .btn-login:hover {
+      background: linear-gradient(to right, #8200ff, #ff0050);
     }
 
     footer {
@@ -158,6 +153,10 @@
     <h2>🧑‍🤝‍🧑 Unsere Community</h2>
     <p>Join den Discord, chatte mit uns live oder schick deine Songwünsche!</p>
     <a href="https://discord.gg/2BQfJWeYmV" target="_blank" class="btn-discord">Discord beitreten</a>
+    <br /><br />
+    <a class="btn-login" href="https://discord.com/oauth2/authorize?client_id=1398608131885633638&redirect_uri=https%3A%2F%2Fbackend.hustensaft.org%2Fcallback.html&response_type=token&scope=identify">
+      🚪 Mit Discord einloggen - Nur Für Verwaltung!
+    </a>
   </div>
 
   <footer>
