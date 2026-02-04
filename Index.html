@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hustensaft Jugend | Official</title>
+    <style>
+        :root {
+            --accent-yellow: #FFD700;
+            --bg-dark: #0f0f0f;
+            --card-bg: #1a1a1a;
+            --text-main: #ffffff;
+            --transition: 0.3s ease;
+        }
+
+        body {
+            font-family: 'Inter', 'Segoe UI', sans-serif;
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .header {
+            text-align: center;
+            padding: 60px 20px;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            text-transform: uppercase;
+            letter-spacing: 4px;
+            color: var(--accent-yellow);
+            margin: 0;
+            text-shadow: 3px 3px 0px rgba(255, 215, 0, 0.2);
+        }
+
+        .header p {
+            color: #888;
+            margin-top: 10px;
+            font-weight: 300;
+        }
+
+        .links-container {
+            width: 100%;
+            max-width: 450px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            padding: 20px;
+        }
+
+        .link-card {
+            background: var(--card-bg);
+            border: 1px solid #333;
+            padding: 18px;
+            text-align: center;
+            text-decoration: none;
+            color: var(--text-main);
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            border-radius: 4px;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .link-card:hover {
+            background: var(--accent-yellow);
+            color: var(--bg-dark);
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(255, 215, 0, 0.15);
+        }
+
+        .link-card.twitch { border-left: 5px solid #9146FF; }
+        .link-card.youtube { border-left: 5px solid #FF0000; }
+        .link-card.discord { border-left: 5px solid #5865F2; }
+        .link-card.impressum { 
+            margin-top: 40px;
+            font-size: 0.8rem;
+            border: none;
+            opacity: 0.6;
+        }
+
+        .link-card.impressum:hover {
+            opacity: 1;
+            background: transparent;
+            color: var(--accent-yellow);
+            box-shadow: none;
+        }
+
+        .badge {
+            font-size: 0.7rem;
+            background: var(--accent-yellow);
+            color: black;
+            padding: 2px 6px;
+            margin-left: 10px;
+            border-radius: 2px;
+        }
+
+        footer {
+            margin-top: auto;
+            padding: 40px;
+            font-size: 0.8rem;
+            color: #444;
+        }
+    </style>
+</head>
+<body>
+
+    <header class="header">
+        <h1>HUSTENSAFT JUGEND</h1>
+        <p>Minecraft • Streaming • Community</p>
+    </header>
+
+    <main class="links-container">
+        <a href="https://twitch.tv/hu_stensaft" target="_blank" class="link-card twitch">
+            Twitch <span class="badge">LIVE</span>
+        </a>
+
+        <a href="https://www.youtube.com/@hustensaftjugend" target="_blank" class="link-card youtube">
+            YouTube
+        </a>
+
+        <a href="https://discord.gg/YOUR_INVITE_LINK" target="_blank" class="link-card discord">
+            Discord Server
+        </a>
+
+        <a href="#" class="link-card">
+            Team Bewerbung <span class="badge">BALD</span>
+        </a>
+
+        <a href="impressum.html" class="link-card impressum">
+            Rechtliches & Impressum
+        </a>
+    </main>
+
+    <footer>
+        &copy; 2026 HUSTENSAFT JUGENDPROJEKT VEREINIGUNG
+    </footer>
+
+</body>
+</html>
