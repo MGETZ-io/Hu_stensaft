@@ -3,22 +3,25 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Jobs | Hustensaft Jugend</title>
+    <title>Karriere | Hustensaft Jugend</title>
     <style>
         :root {
             --accent-yellow: #FFD700;
             --bg-dark: #0f0f0f;
             --card-bg: #1a1a1a;
             --text-main: #ffffff;
+            --text-dim: #bbbbbb;
+            --input-bg: #252525;
         }
 
         body {
-            font-family: 'Inter', sans-serif;
+            font-family: 'Inter', 'Segoe UI', sans-serif;
             background-color: var(--bg-dark);
             color: var(--text-main);
             margin: 0;
             display: flex;
             justify-content: center;
+            min-height: 100vh;
             padding: 40px 20px;
         }
 
@@ -37,11 +40,12 @@
         }
 
         .status-message {
-            background: #222;
-            padding: 20px;
+            background: var(--card-bg);
+            padding: 30px;
             border-radius: 4px;
-            border-left: 4px solid #555;
-            color: #bbb;
+            border-left: 5px solid #444;
+            color: var(--text-dim);
+            text-align: center;
         }
 
         .job-card {
@@ -50,64 +54,146 @@
             margin-bottom: 20px;
             border-radius: 4px;
             border: 1px solid #333;
-            transition: 0.3s;
-        }
-
-        .job-card:hover {
-            border-color: var(--accent-yellow);
+            border-left: 4px solid var(--accent-yellow);
         }
 
         .job-card h2 {
             margin-top: 0;
             color: var(--accent-yellow);
-            font-size: 1.2rem;
-        }
-
-        .job-card p {
-            font-size: 0.9rem;
-            color: #ccc;
+            font-size: 1.3rem;
         }
 
         .requirements {
-            font-size: 0.8rem;
+            font-size: 0.85rem;
             color: var(--accent-yellow);
+            background: rgba(255, 215, 0, 0.1);
+            padding: 5px 10px;
+            display: inline-block;
+            border-radius: 2px;
             margin-top: 10px;
-            font-style: italic;
+        }
+
+        .apply-box {
+            margin-top: 50px;
+            background: var(--card-bg);
+            padding: 30px;
+            border-radius: 4px;
+            border: 1px solid #333;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        input, textarea, select {
+            background: var(--input-bg);
+            border: 1px solid #444;
+            padding: 12px;
+            color: white;
+            font-family: inherit;
+            border-radius: 4px;
+        }
+
+        input:focus, textarea:focus {
+            border-color: var(--accent-yellow);
+            outline: none;
+        }
+
+        button {
+            background: var(--accent-yellow);
+            color: black;
+            border: none;
+            padding: 15px;
+            font-weight: bold;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: 0.3s;
+            border-radius: 4px;
+        }
+
+        button:hover:not(:disabled) {
+            background: #e6c200;
+            transform: translateY(-2px);
+        }
+
+        button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
         }
 
         .back-link {
-            display: block;
+            display: inline-block;
             margin-top: 40px;
-            color: #666;
+            color: var(--text-dim);
             text-decoration: none;
-            font-size: 0.8rem;
+            font-size: 0.9rem;
         }
 
-        .back-link:hover { color: var(--accent-yellow); }
+        #responseMsg {
+            margin-top: 15px;
+            padding: 10px;
+            border-radius: 4px;
+            display: none;
+        }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <h1>Team-Suche</h1>
-    <div id="jobs-container">Lädt aktuelle Vakanzen...</div>
-    
-    <a href="index.html" class="back-link">← Zurück zur Hauptseite</a>
+    <header>
+        <h1>Team-Suche</h1>
+    </header>
+
+    <div id="jobs-list">
+        </div>
+
+    <div id="apply-section" style="display: none;">
+        <div class="apply-box">
+            <h2 style="color: var(--accent-yellow); text-transform: uppercase; margin-top: 0;">Direkt bewerben</h2>
+            <form id="applyForm">
+                <input type="text" id="name" placeholder="Dein Name / Ingame-Name" required>
+                <input type="text" id="discord_id" placeholder="Deine Discord ID (z.B. user#0000)" required>
+                
+                <label style="font-size: 0.8rem; color: #888;">Für welche Rolle bewirbst du dich?</label>
+                <select id="rolle_select">
+                    </select>
+                
+                <textarea id="message" rows="5" placeholder="Erzähl uns kurz was über dich..." required></textarea>
+                
+                <button type="submit" id="submitBtn">Bewerbung abschicken</button>
+            </form>
+            <div id="responseMsg"></div>
+        </div>
+    </div>
+
+    <a href="index.html" class="back-link">← Zurück zur Startseite</a>
 </div>
 
 <script>
-    async function loadJobs() {
-        const container = document.getElementById('jobs-container');
+    // 1. KONFIGURATION
+    const WEBHOOK_URL = "DEINE_DISCORD_WEBHOOK_URL_HIER_EINSETZEN";
+
+    // 2. JOBS LADEN
+    async function init() {
+        const jobsList = document.getElementById('jobs-list');
+        const applySection = document.getElementById('apply-section');
+        const rolleSelect = document.getElementById('rolle_select');
+
         try {
-            const response = await fetch('jobs.json');
+            const response = await fetch('jobs.json?v=' + new Date().getTime());
             const data = await response.json();
 
             if (!data.sucheAktiv) {
-                container.innerHTML = `<div class="status-message">${data.nachrichtWennInaktiv}</div>`;
+                jobsList.innerHTML = `<div class="status-message"><p>${data.nachrichtWennInaktiv}</p></div>`;
                 return;
             }
 
-            let html = '';
+            // Wenn aktiv: Jobs anzeigen
+            applySection.style.display = "block";
+            let html = '<p>Wir suchen aktuell Verstärkung für:</p>';
+            
             data.jobs.forEach(job => {
                 html += `
                     <div class="job-card">
@@ -116,16 +202,68 @@
                         <div class="requirements">Anforderung: ${job.anforderung}</div>
                     </div>
                 `;
+                // Dropdown füllen
+                const opt = document.createElement('option');
+                opt.value = job.titel;
+                opt.innerText = job.titel;
+                rolleSelect.appendChild(opt);
             });
-            container.innerHTML = html;
+            jobsList.innerHTML = html;
 
         } catch (error) {
-            container.innerHTML = '<p>Fehler beim Laden der Stellenangebote.</p>';
-            console.error('Error:', error);
+            jobsList.innerHTML = `<div class="status-message"><p>Fehler beim Laden der Stellen.</p></div>`;
         }
     }
 
-    loadJobs();
+    // 3. WEBHOOK SENDEN
+    document.getElementById('applyForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const btn = document.getElementById('submitBtn');
+        const msg = document.getElementById('responseMsg');
+        
+        btn.disabled = true;
+        btn.innerText = "Sende Daten...";
+
+        const payload = {
+            username: "Hustensaft Karriere-Bot",
+            embeds: [{
+                title: "📩 Neue Bewerbung: " + document.getElementById('rolle_select').value,
+                color: 16768768, // Gelb
+                fields: [
+                    { name: "Name", value: document.getElementById('name').value, inline: true },
+                    { name: "Discord ID", value: document.getElementById('discord_id').value, inline: true },
+                    { name: "Nachricht", value: document.getElementById('message').value }
+                ],
+                timestamp: new Date()
+            }]
+        };
+
+        try {
+            const res = await fetch(WEBHOOK_URL, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            });
+
+            if (res.ok) {
+                msg.style.display = "block";
+                msg.style.color = "var(--accent-yellow)";
+                msg.innerText = "✅ Bewerbung wurde an Discord gesendet!";
+                document.getElementById('applyForm').reset();
+            } else {
+                throw new Error();
+            }
+        } catch (err) {
+            msg.style.display = "block";
+            msg.style.color = "red";
+            msg.innerText = "❌ Fehler beim Senden. Webhook-Konfiguration prüfen.";
+        } finally {
+            btn.disabled = false;
+            btn.innerText = "Bewerbung abschicken";
+        }
+    });
+
+    init();
 </script>
 
 </body>
