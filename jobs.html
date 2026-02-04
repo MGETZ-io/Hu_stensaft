@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jobs | Hustensaft Jugend</title>
+    <style>
+        :root {
+            --accent-yellow: #FFD700;
+            --bg-dark: #0f0f0f;
+            --card-bg: #1a1a1a;
+            --text-main: #ffffff;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            padding: 40px 20px;
+        }
+
+        .container {
+            max-width: 600px;
+            width: 100%;
+        }
+
+        h1 {
+            color: var(--accent-yellow);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            border-bottom: 2px solid var(--accent-yellow);
+            display: inline-block;
+            margin-bottom: 30px;
+        }
+
+        .status-message {
+            background: #222;
+            padding: 20px;
+            border-radius: 4px;
+            border-left: 4px solid #555;
+            color: #bbb;
+        }
+
+        .job-card {
+            background: var(--card-bg);
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 4px;
+            border: 1px solid #333;
+            transition: 0.3s;
+        }
+
+        .job-card:hover {
+            border-color: var(--accent-yellow);
+        }
+
+        .job-card h2 {
+            margin-top: 0;
+            color: var(--accent-yellow);
+            font-size: 1.2rem;
+        }
+
+        .job-card p {
+            font-size: 0.9rem;
+            color: #ccc;
+        }
+
+        .requirements {
+            font-size: 0.8rem;
+            color: var(--accent-yellow);
+            margin-top: 10px;
+            font-style: italic;
+        }
+
+        .back-link {
+            display: block;
+            margin-top: 40px;
+            color: #666;
+            text-decoration: none;
+            font-size: 0.8rem;
+        }
+
+        .back-link:hover { color: var(--accent-yellow); }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Team-Suche</h1>
+    <div id="jobs-container">Lädt aktuelle Vakanzen...</div>
+    
+    <a href="index.html" class="back-link">← Zurück zur Hauptseite</a>
+</div>
+
+<script>
+    async function loadJobs() {
+        const container = document.getElementById('jobs-container');
+        try {
+            const response = await fetch('jobs.json');
+            const data = await response.json();
+
+            if (!data.sucheAktiv) {
+                container.innerHTML = `<div class="status-message">${data.nachrichtWennInaktiv}</div>`;
+                return;
+            }
+
+            let html = '';
+            data.jobs.forEach(job => {
+                html += `
+                    <div class="job-card">
+                        <h2>${job.titel}</h2>
+                        <p>${job.beschreibung}</p>
+                        <div class="requirements">Anforderung: ${job.anforderung}</div>
+                    </div>
+                `;
+            });
+            container.innerHTML = html;
+
+        } catch (error) {
+            container.innerHTML = '<p>Fehler beim Laden der Stellenangebote.</p>';
+            console.error('Error:', error);
+        }
+    }
+
+    loadJobs();
+</script>
+
+</body>
+</html>
