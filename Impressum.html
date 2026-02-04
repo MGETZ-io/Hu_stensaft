@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="noindex, nofollow">
+    <title>Impressum | Hustensaft Jugend</title>
+    <style>
+        :root {
+            --accent-yellow: #FFD700; /* Kräftiges Gelb */
+            --bg-dark: #0f0f0f;       /* Fast Schwarz */
+            --card-bg: #1a1a1a;       /* Dunkles Anthrazit */
+            --text-main: #ffffff;
+            --text-dim: #bbbbbb;
+        }
+
+        body {
+            font-family: 'Inter', 'Segoe UI', Arial, sans-serif;
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .container {
+            background: var(--card-bg);
+            padding: 40px;
+            border-radius: 4px; /* Eckiger Look wirkt oft professioneller im Gaming */
+            border-left: 5px solid var(--accent-yellow);
+            box-shadow: 10px 10px 0px rgba(255, 215, 0, 0.1);
+            max-width: 500px;
+            width: 100%;
+        }
+
+        h1 {
+            color: var(--accent-yellow);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 30px;
+            border-bottom: 1px solid #333;
+            padding-bottom: 10px;
+        }
+
+        h2 {
+            color: var(--accent-yellow);
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            margin-top: 25px;
+        }
+
+        .data-box {
+            background: #252525;
+            padding: 15px;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace; /* Code-Style für Gaming-Vibe */
+            color: var(--text-main);
+            line-height: 1.5;
+        }
+
+        .footer-info {
+            margin-top: 40px;
+            font-size: 0.75rem;
+            color: var(--text-dim);
+            text-align: right;
+        }
+
+        /* Hover Effekt für das Impressum */
+        .container:hover {
+            box-shadow: 10px 10px 0px rgba(255, 215, 0, 0.2);
+            transition: 0.3s;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Impressum</h1>
+    
+    <h2>Verantwortlich</h2>
+    <div id="address-root" class="data-box">
+        Lädt verschlüsselte Daten...
+    </div>
+
+    <h2>Kontakt</h2>
+    <div id="contact-root" class="data-box">
+        </div>
+
+    <div class="footer-info">
+        HUSTENSAFT JUGENDPROJEKT VEREINIGUNG<br>
+        &copy; 2026 | Private Community
+    </div>
+</div>
+
+<script>
+    /* Deine Daten werden hier "verschleiert". 
+       Ersetze die Werte unten einfach in den Anführungszeichen.
+    */
+    const info = {
+        n: "Dein Vorname Nachname",
+        s: "Deine Straße Hausnummer",
+        p: "PLZ Stadt",
+        m: "support@deine-domain.de"
+    };
+
+    // Funktion zum Anzeigen (leicht verzögert gegen Bots)
+    setTimeout(() => {
+        document.getElementById('address-root').innerHTML = 
+            `<strong>${info.n}</strong><br>${info.s}<br>${info.p}`;
+        
+        document.getElementById('contact-root').innerHTML = 
+            `E-Mail: ${info.m}`;
+    }, 500);
+</script>
+
+</body>
+</html>
