@@ -1,0 +1,16 @@
+{
+  "sucheAktiv": false,
+  "nachrichtWennInaktiv": "Aktuell ist unser Team voll besetzt. Schau bald wieder vorbei!",
+  "jobs": [
+    {
+      "titel": "Minecraft Builder",
+      "beschreibung": "Du hilfst uns beim Aufbau unserer neuen Projekt-Map.",
+      "anforderung": "Erfahrung mit WorldEdit & Detailreichtum."
+    },
+    {
+      "titel": "Discord Moderator",
+      "beschreibung": "Du sorgst für Ordnung und gute Stimmung auf unserem Server.",
+      "anforderung": "Mindestalter 16 Jahre & hohe Geduld."
+    }
+  ]
+}
