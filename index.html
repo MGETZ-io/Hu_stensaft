@@ -11,6 +11,8 @@
             --card-bg: #1a1a1a;
             --text-main: #ffffff;
             --transition: 0.3s ease;
+            --twitch-purple: #9146FF;
+            --yt-red: #FF0000;
         }
 
         body {
@@ -26,7 +28,7 @@
 
         .header {
             text-align: center;
-            padding: 60px 20px;
+            padding: 40px 20px;
         }
 
         .header h1 {
@@ -38,19 +40,27 @@
             text-shadow: 3px 3px 0px rgba(255, 215, 0, 0.2);
         }
 
-        .header p {
-            color: #888;
-            margin-top: 10px;
-            font-weight: 300;
+        /* Main Grid Layout */
+        .content-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 30px;
+            width: 95%;
+            max-width: 1200px;
+            padding: 20px;
         }
 
+        @media (min-width: 900px) {
+            .content-grid {
+                grid-template-columns: 350px 1fr;
+            }
+        }
+
+        /* Links Section */
         .links-container {
-            width: 100%;
-            max-width: 450px;
             display: flex;
             flex-direction: column;
             gap: 15px;
-            padding: 20px;
         }
 
         .link-card {
@@ -63,13 +73,11 @@
             font-weight: 600;
             text-transform: uppercase;
             letter-spacing: 1px;
-            border-radius: 4px;
+            border-radius: 8px;
             transition: var(--transition);
             display: flex;
             align-items: center;
             justify-content: center;
-            position: relative;
-            overflow: hidden;
         }
 
         .link-card:hover {
@@ -79,21 +87,44 @@
             box-shadow: 0 10px 20px rgba(255, 215, 0, 0.15);
         }
 
-        .link-card.twitch { border-left: 5px solid #9146FF; }
-        .link-card.youtube { border-left: 5px solid #FF0000; }
+        .link-card.twitch { border-left: 5px solid var(--twitch-purple); }
+        .link-card.youtube { border-left: 5px solid var(--yt-red); }
         .link-card.discord { border-left: 5px solid #5865F2; }
-        .link-card.impressum { 
-            margin-top: 40px;
-            font-size: 0.8rem;
-            border: none;
-            opacity: 0.6;
+
+        /* Media Section */
+        .media-container {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
         }
 
-        .link-card.impressum:hover {
-            opacity: 1;
-            background: transparent;
+        .video-wrapper {
+            position: relative;
+            padding-bottom: 56.25%; /* 16:9 ratio */
+            height: 0;
+            background: #000;
+            border-radius: 12px;
+            overflow: hidden;
+            border: 1px solid #333;
+        }
+
+        .video-wrapper iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+
+        .section-title {
+            font-size: 0.9rem;
+            text-transform: uppercase;
             color: var(--accent-yellow);
-            box-shadow: none;
+            margin-bottom: 10px;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
         }
 
         .badge {
@@ -110,6 +141,7 @@
             padding: 40px;
             font-size: 0.8rem;
             color: #444;
+            text-align: center;
         }
     </style>
 </head>
@@ -120,27 +152,58 @@
         <p>Minecraft • Streaming • Community</p>
     </header>
 
-    <main class="links-container">
-        <a href="https://twitch.tv/hu_stensaft" target="_blank" class="link-card twitch">
-            Twitch <span class="badge">LIVE</span>
-        </a>
+    <div class="content-grid">
+        <aside class="links-container">
+            <div class="section-title">Quick Links</div>
+            
+            <a href="https://twitch.tv/hu_stensaft" target="_blank" class="link-card twitch">
+                Twitch <span class="badge">LIVE</span>
+            </a>
 
-        <a href="https://youtube.com/@hu_stensaft" target="_blank" class="link-card youtube">
-            Youtube <span class="badge">LIVE</span>
-        </a>
+            <a href="https://youtube.com/@hu_stensaft" target="_blank" class="link-card youtube">
+                Youtube <span class="badge">LIVE</span>
+            </a>
 
-        <a href="https://discord.gg/y8hgebrq84" target="_blank" class="link-card discord">
-            Discord Server
-        </a>
+            <a href="https://discord.gg/y8hgebrq84" target="_blank" class="link-card discord">
+                Discord Server
+            </a>
 
-        <a href="#" class="link-card">
-            Team Bewerbung <span class="badge">Discord Required</span>
-        </a>
+            <a href="/jobs" class="link-card">
+                Team Bewerbung
+            </a>
 
-        <a href="impressum.html" class="link-card impressum">
-            Rechtliches & Impressum
-        </a>
-    </main>
+            <a href="impressum" style="margin-top:20px; font-size: 0.7rem; opacity: 0.5; text-decoration: none; color: white; text-align: center;">
+                Rechtliches & Impressum
+            </a>
+        </aside>
+
+        <main class="media-container">
+            
+            <section>
+                <div class="section-title">🎥 Aktueller Stream</div>
+                <div class="video-wrapper">
+                    <iframe 
+                        src="https://player.twitch.tv/?channel=hu_stensaft&parent=localhost&parent=https://hustensaft.org" 
+                        frameborder="0" 
+                        allowfullscreen="true" 
+                        scrolling="no">
+                    </iframe>
+                </div>
+            </section>
+
+            <section>
+                <div class="section-title">📺 Neuestes Video</div>
+                <div class="video-wrapper">
+                    <iframe 
+                        src="https://www.youtube.com/embed?listType=user_uploads&list=hu_stensaft" 
+                        frameborder="0" 
+                        allowfullscreen>
+                    </iframe>
+                </div>
+            </section>
+
+        </main>
+    </div>
 
     <footer>
         &copy; 2026 HUSTENSAFT JUGENDPROJEKT VEREINIGUNG
