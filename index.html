@@ -40,13 +40,19 @@
             text-shadow: 3px 3px 0px rgba(255, 215, 0, 0.2);
         }
 
+        .header p {
+            color: #888;
+            margin-top: 10px;
+            font-weight: 300;
+        }
+
         /* Main Grid Layout */
         .content-grid {
             display: grid;
             grid-template-columns: 1fr;
             gap: 30px;
             width: 95%;
-            max-width: 1200px;
+            max-width: 1100px;
             padding: 20px;
         }
 
@@ -95,7 +101,7 @@
         .media-container {
             display: flex;
             flex-direction: column;
-            gap: 20px;
+            gap: 25px;
         }
 
         .video-wrapper {
@@ -120,7 +126,7 @@
             font-size: 0.9rem;
             text-transform: uppercase;
             color: var(--accent-yellow);
-            margin-bottom: 10px;
+            margin-bottom: 12px;
             letter-spacing: 2px;
             display: flex;
             align-items: center;
@@ -134,6 +140,19 @@
             padding: 2px 6px;
             margin-left: 10px;
             border-radius: 2px;
+            font-weight: bold;
+        }
+
+        .badge.live {
+            background: #ff0000;
+            color: white;
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.6; }
+            100% { opacity: 1; }
         }
 
         footer {
@@ -142,6 +161,20 @@
             font-size: 0.8rem;
             color: #444;
             text-align: center;
+        }
+
+        .impressum-link {
+            margin-top: 20px;
+            font-size: 0.75rem;
+            color: #666;
+            text-decoration: none;
+            display: block;
+            text-align: center;
+            transition: var(--transition);
+        }
+
+        .impressum-link:hover {
+            color: var(--accent-yellow);
         }
     </style>
 </head>
@@ -154,14 +187,14 @@
 
     <div class="content-grid">
         <aside class="links-container">
-            <div class="section-title">Quick Links</div>
+            <div class="section-title">Socials & Mehr</div>
             
             <a href="https://twitch.tv/hu_stensaft" target="_blank" class="link-card twitch">
-                Twitch <span class="badge">LIVE</span>
+                Twitch <span class="badge live">LIVE</span>
             </a>
 
             <a href="https://youtube.com/@hu_stensaft" target="_blank" class="link-card youtube">
-                Youtube <span class="badge">LIVE</span>
+                Youtube <span class="badge live">LIVE</span>
             </a>
 
             <a href="https://discord.gg/y8hgebrq84" target="_blank" class="link-card discord">
@@ -172,7 +205,7 @@
                 Team Bewerbung
             </a>
 
-            <a href="impressum" style="margin-top:20px; font-size: 0.7rem; opacity: 0.5; text-decoration: none; color: white; text-align: center;">
+            <a href="impressum.html" class="impressum-link">
                 Rechtliches & Impressum
             </a>
         </aside>
@@ -183,7 +216,7 @@
                 <div class="section-title">🎥 Aktueller Stream</div>
                 <div class="video-wrapper">
                     <iframe 
-                        src="https://player.twitch.tv/?channel=hu_stensaft&parent=localhost&parent=https://hustensaft.org" 
+                        src="https://player.twitch.tv/?channel=hu_stensaft&parent=hustensaft.org" 
                         frameborder="0" 
                         allowfullscreen="true" 
                         scrolling="no">
@@ -192,10 +225,10 @@
             </section>
 
             <section>
-                <div class="section-title">📺 Neuestes Video</div>
+                <div class="section-title">📺 Neueste Uploads</div>
                 <div class="video-wrapper">
                     <iframe 
-                        src="https://www.youtube.com/embed?listType=user_uploads&list=hu_stensaft" 
+                        src="https://www.youtube.com/embed?listType=playlist&list=UU6KREO_U6D_H6pGfG9G9X_A" 
                         frameborder="0" 
                         allowfullscreen>
                     </iframe>
@@ -206,7 +239,8 @@
     </div>
 
     <footer>
-        &copy; 2026 HUSTENSAFT JUGENDPROJEKT VEREINIGUNG
+        &copy; 2026 HUSTENSAFT JUGENDPROJEKT VEREINIGUNG<br>
+        <small>hustensaft.org</small>
     </footer>
 
 </body>
