@@ -1,0 +1,25 @@
+{
+  "team": [
+    {
+      "id": 1,
+      "name": "Max (Hu_stensaft)",
+      "rolle": "Gründer & Visionär",
+      "about": "Ich habe die Initiative gegründet!",
+      "socials": {
+        "instagram": "https://instagram.com/deinprofil",
+        "discord": "https://discord.gg/deinserver",
+        "youtube": "https://youtube.com/deinkanal"
+      }
+    },
+    {
+      "id": 2,
+      "name": "Lucas",
+      "rolle": "Co-Gründer & DEV Leitung",
+      "about": "Ich habe die Initiative mitgegründet!",
+      "socials": {
+        "instagram": "https://instagram.com/profil2",
+        "discord": "#"
+      }
+    }
+  ]
+}
