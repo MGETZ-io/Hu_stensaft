@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Team | Hustensaft Org</title>
+    <style>
+        :root { --main-color: #9b59b6; --bg-dark: #0f0f0f; --card-bg: #1a1a1a; }
+        body { font-family: 'Segoe UI', sans-serif; background: var(--bg-dark); color: white; margin: 0; padding: 20px; text-align: center; }
+        
+        .team-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; max-width: 1200px; margin: 40px auto; }
+        
+        .card { background: var(--card-bg); padding: 30px; border-radius: 20px; border: 1px solid #333; cursor: pointer; transition: 0.3s; }
+        .card:hover { border-color: var(--main-color); transform: translateY(-5px); box-shadow: 0 10px 20px rgba(155, 89, 182, 0.2); }
+        .card h3 { margin: 10px 0 5px; color: var(--main-color); }
+        
+        /* Modal Style (Das Pop-up) */
+        .modal { display: none; position: fixed; z-index: 100; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); backdrop-filter: blur(5px); }
+        .modal-content { background: var(--card-bg); margin: 10% auto; padding: 30px; border-radius: 20px; width: 80%; max-width: 500px; border: 2px solid var(--main-color); position: relative; }
+        .close { position: absolute; right: 20px; top: 10px; font-size: 30px; cursor: pointer; color: #fff; }
+        
+        .social-links { margin-top: 20px; display: flex; justify-content: center; gap: 15px; }
+        .social-btn { padding: 10px 20px; border-radius: 10px; text-decoration: none; color: white; font-weight: bold; font-size: 0.9em; background: #333; transition: 0.2s; }
+        .btn-instagram { background: #E1306C; }
+        .btn-discord { background: #5865F2; }
+        .btn-youtube { background: #FF0000; }
+        .social-btn:hover { opacity: 0.8; }
+    </style>
+</head>
+<body>
+
+    <h1>Team Hustensaft</h1>
+    <p>Powered by Hustensaft Jugendinitiative</p>
+
+    <div id="team-grid" class="team-grid"></div>
+
+    <div id="infoModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal()">&times;</span>
+            <h2 id="modal-name">Name</h2>
+            <p id="modal-rolle" style="color: var(--main-color); font-weight: bold;"></p>
+            <hr style="border: 0; border-top: 1px solid #333; margin: 20px 0;">
+            <p id="modal-about">Über mich Text...</p>
+            <div id="modal-socials" class="social-links"></div>
+        </div>
+    </div>
+
+    <script>
+        let teamData = [];
+
+        // Daten laden
+        fetch('team.json')
+            .then(res => res.json())
+            .then(data => {
+                teamData = data.team;
+                const grid = document.getElementById('team-grid');
+                teamData.forEach(p => {
+                    const card = document.createElement('div');
+                    card.className = 'card';
+                    card.innerHTML = `<h3>${p.name}</h3><p>${p.rolle}</p>`;
+                    card.onclick = () => showMember(p.id);
+                    grid.appendChild(card);
+                });
+            });
+
+        function showMember(id) {
+            const member = teamData.find(m => m.id === id);
+            document.getElementById('modal-name').innerText = member.name;
+            document.getElementById('modal-rolle').innerText = member.rolle;
+            document.getElementById('modal-about').innerText = member.about;
+            
+            const socialsDiv = document.getElementById('modal-socials');
+            socialsDiv.innerHTML = ''; // Vorherige Links leeren
+            
+            // Socials dynamisch erstellen
+            for (const [platform, url] of Object.entries(member.socials)) {
+                const a = document.createElement('a');
+                a.href = url;
+                a.target = "_blank";
+                a.className = `social-btn btn-${platform}`;
+                a.innerText = platform.charAt(0).toUpperCase() + platform.slice(1);
+                socialsDiv.appendChild(a);
+            }
+            
+            document.getElementById('infoModal').style.display = "block";
+        }
+
+        function closeModal() {
+            document.getElementById('infoModal').style.display = "none";
+        }
+
+        // Schließen wenn man außerhalb klickt
+        window.onclick = (event) => {
+            if (event.target == document.getElementById('infoModal')) closeModal();
+        }
+    </script>
+</body>
+</html>
