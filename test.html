@@ -5,92 +5,57 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>API Check</title>
     <style>
-        body {
-            font-family: sans-serif;
-            background-color: #f0f2f5;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            margin: 0;
-            text-align: center;
-        }
-
-        /* Standardmäßig ist alles versteckt */
-        #success-content, #error-404, #error-500, #loading {
-            display: none;
-            padding: 2rem;
-            background: white;
-            border-radius: 12px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-            max-width: 400px;
-        }
-
-        /* Lade-Anzeige am Anfang zeigen */
+        body { font-family: sans-serif; background-color: #f0f2f5; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; text-align: center; }
+        #success-content, #error-404, #error-500, #loading { display: none; padding: 2rem; background: white; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); max-width: 400px; }
         #loading { display: block; }
-
-        h1 { margin-top: 0; }
-        .btn {
-            display: inline-block;
-            margin-top: 15px;
-            padding: 10px 20px;
-            background: #007bff;
-            color: white;
-            text-decoration: none;
-            border-radius: 5px;
-        }
+        .btn { display: inline-block; margin-top: 15px; padding: 10px 20px; background: #007bff; color: white; text-decoration: none; border-radius: 5px; }
     </style>
 </head>
 <body>
 
-    <div id="loading">Wird geprüft...</div>
+    <div id="loading">Verbindung zur API wird hergestellt...</div>
 
     <div id="success-content">
         <h1 style="color: #28a745;">Erfolgreich!</h1>
-        <p>Die Seite kann angezeigt werden. Willkommen im System.</p>
+        <p>Die Seite wurde freigegeben.</p>
         <a href="https://hustensaft.org" class="btn">Zur Hauptseite</a>
     </div>
 
     <div id="error-404">
-        <h1 style="color: #dc3545;">Zugriff verweigert</h1>
-        <p>Wir haben gerade eine Störung. Die Seite darf nicht geladen werden (Code 404).</p>
+        <h1 style="color: #dc3545;">Störung</h1>
+        <p>Wir haben gerade eine Störung. (Status 404)</p>
     </div>
 
     <div id="error-500">
         <h1 style="color: #ff8c00;">Server Fehler</h1>
-        <p>Ein interner Fehler ist aufgetreten (Code 500).</p>
+        <p>Die API antwortet nicht korrekt. (Status 500)</p>
     </div>
 
     <script>
         async function checkAccess() {
+            // HIER DEINE VOLLE URL ZUR JSON-DATEI EINTRAGEN
+            const apiUrl = 'https://deine-andere-domain.de/pfad/zu/status.json';
             const loading = document.getElementById('loading');
             
             try {
-                const response = await fetch('status.json');
+                // 'mode: cors' ist wichtig für externe Domains
+                const response = await fetch(apiUrl, { mode: 'cors' });
                 const data = await response.json();
                 
-                // Lade-Anzeige ausblenden
                 loading.style.display = 'none';
 
-                // Logik basierend auf der Variable "funktional"
                 if (data.funktional === 200) {
                     document.getElementById('success-content').style.display = 'block';
                 } else if (data.funktional === 404) {
                     document.getElementById('error-404').style.display = 'block';
                 } else if (data.funktional === 500) {
                     document.getElementById('error-500').style.display = 'block';
-                } else {
-                    // Fallback für andere Zahlen
-                    alert("Unbekannter Status-Code: " + data.funktional);
                 }
-
             } catch (err) {
-                loading.innerText = "Fehler beim Laden der Status-Datei.";
-                console.error(err);
+                loading.innerText = "Fehler: Die API-Domain erlaubt keinen Zugriff (CORS-Fehler) oder ist offline.";
+                console.error("CORS Problem?", err);
             }
         }
-
-        // Prüfung starten
         checkAccess();
     </script>
 </body>
