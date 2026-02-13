@@ -30,7 +30,7 @@
         /* --- AUTH VIEWS --- */
         .auth-container { height: 100vh; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 20px; text-align: center; }
         .logo-main { font-size: 3rem; font-weight: 900; color: var(--neon-yellow); letter-spacing: -2px; margin-bottom: 5px; text-transform: uppercase; }
-        .glass-card { background: var(--glass); backdrop-filter: blur(15px); border: 1px solid var(--glass-border); border-radius: 20px; padding: 30px; width: 100%; max-width: 380px; box-sizing: border-box; }
+        .glass-card { background: var(--glass); backdrop-filter: blur(15px); border: 1px solid var(--glass-border); border-radius: 20px; padding: 25px; width: 100%; max-width: 380px; box-sizing: border-box; margin-bottom: 15px; }
         
         input, textarea { width: 100%; background: rgba(255,255,255,0.08); border: 1px solid transparent; padding: 15px; border-radius: 12px; color: white; margin-bottom: 15px; box-sizing: border-box; font-size: 16px; font-family: inherit; }
         input:focus { border-color: var(--neon-yellow); outline: none; }
@@ -48,20 +48,28 @@
 
         .tab-content { padding: 20px; animation: fadeIn 0.3s ease; height: calc(100vh - 160px); overflow-y: auto; }
         .plan-card { background: var(--glass); border: 1px solid var(--glass-border); padding: 15px; border-radius: 15px; margin-bottom: 15px; display: flex; justify-content: space-between; align-items: center; }
-        .plan-actions { display: flex; gap: 15px; align-items: center; }
+        
+        /* Leaderboard Style */
+        .leader-row { display: flex; justify-content: space-between; padding: 12px; border-bottom: 1px solid var(--glass-border); font-size: 0.9rem; }
+        .rank-gold { color: var(--premium-gold); font-weight: bold; }
 
-        .bottom-nav { position: fixed; bottom: 0; width: 100%; background: rgba(10,10,10,0.95); backdrop-filter: blur(15px); display: flex; justify-content: space-around; padding: 20px 0; border-top: 1px solid var(--glass-border); z-index: 100; }
-        .nav-item { color: #555; font-size: 1.3rem; cursor: pointer; }
+        .bottom-nav { position: fixed; bottom: 0; width: 100%; background: rgba(10,10,10,0.95); backdrop-filter: blur(15px); display: flex; justify-content: space-around; padding: 15px 0; border-top: 1px solid var(--glass-border); z-index: 100; }
+        .nav-item { color: #555; font-size: 1.2rem; cursor: pointer; text-align: center; }
+        .nav-item span { display: block; font-size: 0.6rem; margin-top: 4px; font-weight: bold; }
         .nav-item.active { color: var(--neon-yellow); }
 
-        /* --- UPGRADE MODAL --- */
         #upgrade-modal { position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 20000; display: flex; justify-content: center; align-items: center; padding: 20px; }
         .upgrade-card { background: #111; border: 2px solid var(--premium-gold); border-radius: 20px; padding: 30px; text-align: center; width: 100%; max-width: 300px; }
+
+        /* Timer Overlay */
+        #timer-overlay { position: fixed; top: 20px; right: 20px; background: var(--neon-yellow); color: black; padding: 10px 20px; border-radius: 30px; font-weight: 900; z-index: 1000; display: none; box-shadow: 0 0 20px var(--neon-yellow); }
 
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
     </style>
 </head>
 <body>
+
+    <div id="timer-overlay">01:30</div>
 
     <div id="login-view" class="auth-container hidden">
         <div class="logo-main">HUSTENSAFT</div>
@@ -89,7 +97,7 @@
         <div class="upgrade-card">
             <i class="fas fa-crown" style="font-size: 2.5rem; color: var(--premium-gold); margin-bottom: 15px;"></i>
             <h3>PREMIUM FEATURE</h3>
-            <p style="font-size: 0.9rem; color: #888;">Schalte Spind-Speicher und Ad-Free frei.</p>
+            <p style="font-size: 0.9rem; color: #888;">Schalte Spind-Speicher, AI-Coach & Nutrition frei.</p>
             <p style="color: white; font-weight: bold;">kontakt@hustensaft.org</p>
             <button class="btn-primary" style="margin-top: 15px;" onclick="closeUpgrade()">Schließen</button>
         </div>
@@ -101,7 +109,7 @@
                 <span id="user-display" style="font-weight: 900;">ATHLET</span>
                 <span id="tier-badge" class="tier-badge">STARTER</span>
             </div>
-            <div id="gym-badge" style="font-size: 0.7rem; background: var(--neon-yellow); color: black; padding: 2px 8px; border-radius: 10px; font-weight: bold;">GYM: -</div>
+            <div id="score-display" style="font-size: 0.8rem; color: var(--neon-yellow); font-weight: 900;">PTS: 0</div>
         </div>
 
         <div id="tab-training" class="tab-content">
@@ -109,63 +117,70 @@
                 <span style="font-weight: 800;"><i class="fas fa-key"></i> SPIND: <span id="locker-display">LOCKED</span></span>
                 <i class="fas fa-lock" id="locker-lock" style="color: var(--premium-gold);"></i>
             </div>
-            <h3 style="margin-top: 0;">Deine Pläne</h3>
-            <div id="plans-list-container"></div>
-            
-            <div id="ad-section">
-                <a href="https://hostvora.com" target="_blank" style="display: block; background: #111; border: 1px dashed var(--neon-yellow); padding: 15px; border-radius: 15px; text-decoration: none; color: white; margin-top: 20px;">
-                    <b style="color: var(--neon-yellow);">Hostvora.com</b><br><small>Elite Hosting | Code: HustensaftFitness5</small>
-                </a>
+            <div style="display: flex; gap: 10px; margin-bottom: 20px;">
+                <button onclick="startRestTimer()" style="flex: 1; background: var(--glass); border: 1px solid var(--glass-border); color: white; padding: 10px; border-radius: 10px; font-size: 0.7rem;"><i class="fas fa-stopwatch"></i> PAUSE (90s)</button>
+                <button onclick="switchTab('leaderboard', null)" style="flex: 1; background: var(--glass); border: 1px solid var(--glass-border); color: white; padding: 10px; border-radius: 10px; font-size: 0.7rem;"><i class="fas fa-trophy"></i> LEADERBOARD</button>
             </div>
+            <h3>Deine Pläne</h3>
+            <div id="plans-list-container"></div>
         </div>
 
         <div id="tab-add" class="tab-content hidden">
-            <h3>Plan erstellen</h3>
+            <div class="glass-card" style="max-width: 100%; border-color: var(--neon-yellow);">
+                <h4 style="margin-top: 0; color: var(--neon-yellow);"><i class="fas fa-robot"></i> AI COACH VORSCHLAG</h4>
+                <p id="ai-suggestion" style="font-size: 0.85rem; color: #ccc;">Lade Daten für Analyse...</p>
+            </div>
+            <h3>Neuer Plan</h3>
             <div class="glass-card" style="max-width: 100%;">
                 <input type="text" id="new-plan-name" placeholder="Name">
-                <textarea id="new-plan-exercises" placeholder="Übungen & Sätze..." rows="6"></textarea>
-                <button class="btn-primary" onclick="savePlan()">Speichern</button>
+                <textarea id="new-plan-exercises" placeholder="Übungen & Sätze..." rows="4"></textarea>
+                <button class="btn-primary" onclick="savePlan()">Speichern (+50 PTS)</button>
             </div>
         </div>
 
         <div id="tab-settings" class="tab-content hidden">
+            <div id="nutrition-section" class="glass-card" style="max-width: 100%;" onclick="checkPremium()">
+                <h4 style="margin: 0 0 10px 0;">NUTRITION TODAY</h4>
+                <div style="display: flex; justify-content: space-between; font-weight: bold;">
+                    <span>CAL: <span id="cal-display">0</span></span>
+                    <span>PRO: <span id="pro-display">0</span>g</span>
+                </div>
+                <div style="display: flex; gap: 5px; margin-top: 10px;">
+                    <input type="number" id="nutri-cal" placeholder="kcal" style="margin:0; padding: 8px;">
+                    <input type="number" id="nutri-pro" placeholder="Prot" style="margin:0; padding: 8px;">
+                    <button onclick="addNutrition()" style="background: var(--neon-yellow); border:none; border-radius: 8px; padding: 0 15px;"><i class="fas fa-plus"></i></button>
+                </div>
+            </div>
             <h3>Account</h3>
             <div class="glass-card" style="max-width: 100%;">
-                <label style="font-size: 0.7rem; color: #666; display: block; margin-bottom: 5px;">DEIN GYM</label>
-                <input type="text" id="gym-input" placeholder="Z.B. McFit">
-                
-                <label style="font-size: 0.7rem; color: #666; display: block; margin-bottom: 5px;">SPINDNUMMER (PREMIUM)</label>
-                <input type="text" id="locker-input" placeholder="Nummer">
-                
+                <input type="text" id="gym-input" placeholder="Mein Gym">
+                <input type="text" id="locker-input" placeholder="Spind (Premium)">
                 <button class="btn-primary" onclick="updateSettings()">Speichern</button>
                 <button class="btn-primary" style="background: #aa0000; color: white; margin-top: 20px;" onclick="signOut()">Abmelden</button>
             </div>
         </div>
 
+        <div id="tab-leaderboard" class="tab-content hidden">
+            <h3 style="color: var(--neon-yellow);"><i class="fas fa-crown"></i> ELITE RANKING</h3>
+            <div id="leaderboard-list" class="glass-card" style="max-width: 100%; padding: 10px;"></div>
+            <button class="btn-primary" style="margin-top: 15px;" onclick="switchTab('training', null)">Zurück</button>
+        </div>
+
         <div class="bottom-nav">
-            <div class="nav-item active" onclick="switchTab('training', this)"><i class="fas fa-dumbbell"></i></div>
-            <div class="nav-item" onclick="switchTab('add', this)"><i class="fas fa-plus-square"></i></div>
-            <div class="nav-item" onclick="switchTab('settings', this)"><i class="fas fa-cog"></i></div>
+            <div class="nav-item active" onclick="switchTab('training', this)"><i class="fas fa-dumbbell"></i><span>Workout</span></div>
+            <div class="nav-item" onclick="switchTab('add', this)"><i class="fas fa-plus-square"></i><span>Erstellen</span></div>
+            <div class="nav-item" onclick="switchTab('settings', this)"><i class="fas fa-user-cog"></i><span>Profil</span></div>
         </div>
     </div>
 
     <script>
-        // Supabase Init
         const SUPABASE_URL = 'https://zalbnzbqtsncnjhjgiog.supabase.co';
         const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InphbGJuemJxdHNuY25qaGpnaW9nIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzEwMTU4MTksImV4cCI6MjA4NjU5MTgxOX0.L_n6P-cZD3tOtI2jlrJniYKhNTQpkt7MZUu1xMMbPYQ';
         const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-
-        // WICHTIG: Dynamische Redirect-URL
         const currentPath = window.location.origin + window.location.pathname;
 
         let currentUser = null;
-        let userData = { gym_name: '', training_plans: [], locker_number: '', account_tier: 'Starter' };
-
-        function showAuthView(view) {
-            document.getElementById('login-view').classList.add('hidden');
-            document.getElementById('register-view').classList.add('hidden');
-            document.getElementById(view + '-view').classList.remove('hidden');
-        }
+        let userData = { gym_name: '', training_plans: [], locker_number: '', account_tier: 'Starter', points: 0, nutrition_today: {calories: 0, protein: 0} };
 
         window.onload = async () => {
             const { data: { session } } = await _supabase.auth.getSession();
@@ -179,14 +194,14 @@
         };
 
         async function loadData() {
-            const { data, error } = await _supabase.from('user_data').select('*').eq('user_id', currentUser.id).single();
+            const { data } = await _supabase.from('user_data').select('*').eq('user_id', currentUser.id).single();
             if (data) {
                 userData = data;
                 applyUI();
                 renderPlans();
-            } else if (error) {
-                // Falls noch kein Eintrag existiert, lege einen leeren an
-                await _supabase.from('user_data').insert([{ user_id: currentUser.id, training_plans: [] }]);
+                updateAICoach();
+            } else {
+                await _supabase.from('user_data').insert([{ user_id: currentUser.id, training_plans: [], points: 10 }]);
             }
         }
 
@@ -195,88 +210,112 @@
             document.getElementById('user-display').innerText = currentUser.email.split('@')[0].toUpperCase();
             document.getElementById('tier-badge').innerText = userData.account_tier;
             document.getElementById('tier-badge').className = 'tier-badge ' + (isPremium ? 'tier-premium' : 'tier-starter');
-            document.getElementById('gym-badge').innerText = "GYM: " + (userData.gym_name || '-');
+            document.getElementById('score-display').innerText = "PTS: " + (userData.points || 0);
             document.getElementById('locker-display').innerText = isPremium ? (userData.locker_number || 'N/A') : 'LOCKED';
+            document.getElementById('cal-display').innerText = userData.nutrition_today.calories;
+            document.getElementById('pro-display').innerText = userData.nutrition_today.protein;
             
-            if(isPremium) {
-                document.getElementById('locker-lock').classList.add('hidden');
-            }
-
+            if(isPremium) document.getElementById('locker-lock').classList.add('hidden');
             document.getElementById('gym-input').value = userData.gym_name || '';
             document.getElementById('locker-input').value = userData.locker_number || '';
-        }
-
-        async function updateSettings() {
-            const gym = document.getElementById('gym-input').value;
-            const locker = document.getElementById('locker-input').value;
-            
-            // Sofort-Feedback im UI
-            userData.gym_name = gym;
-            userData.locker_number = locker;
-
-            const { error } = await _supabase.from('user_data').upsert({ 
-                user_id: currentUser.id, 
-                gym_name: gym, 
-                locker_number: locker,
-                training_plans: userData.training_plans 
-            });
-
-            if (error) {
-                alert("Fehler beim Speichern: " + error.message);
-            } else {
-                alert("Einstellungen wurden unter Hustensaft Management gespeichert!");
-                applyUI();
-            }
-        }
-
-        function switchTab(tab, el) {
-            document.querySelectorAll('.tab-content').forEach(t => t.classList.add('hidden'));
-            document.getElementById('tab-' + tab).classList.remove('hidden');
-            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-            el.classList.add('active');
-        }
-
-        async function signIn() {
-            const { error } = await _supabase.auth.signInWithPassword({ 
-                email: document.getElementById('login-email').value, 
-                password: document.getElementById('login-password').value 
-            });
-            if (error) alert(error.message); else location.reload();
-        }
-
-        async function signUp() {
-            const { error } = await _supabase.auth.signUp({ 
-                email: document.getElementById('reg-email').value, 
-                password: document.getElementById('reg-password').value,
-                options: { emailRedirectTo: currentPath }
-            });
-            if (error) alert(error.message); else alert("Check deine Mails zur Aktivierung!");
-        }
-
-        async function signInWithDiscord() { 
-            await _supabase.auth.signInWithOAuth({ 
-                provider: 'discord',
-                options: { redirectTo: currentPath }
-            }); 
         }
 
         async function savePlan() {
             const name = document.getElementById('new-plan-name').value;
             const exercises = document.getElementById('new-plan-exercises').value;
             if(!name) return;
+            
             userData.training_plans.push({ name, exercises });
-            await _supabase.from('user_data').upsert({ user_id: currentUser.id, training_plans: userData.training_plans });
-            document.getElementById('new-plan-name').value = '';
-            document.getElementById('new-plan-exercises').value = '';
-            renderPlans();
-            switchTab('training', document.querySelectorAll('.nav-item')[0]);
+            userData.points += 50; // Belohnung für Erstellung
+            
+            await _supabase.from('user_data').upsert({ 
+                user_id: currentUser.id, 
+                training_plans: userData.training_plans,
+                points: userData.points 
+            });
+            
+            alert("Plan gespeichert! +50 Punkte für Hustensaft Management.");
+            location.reload();
         }
 
-        async function deletePlan(index) {
-            if(!confirm("Plan wirklich löschen?")) return;
-            userData.training_plans.splice(index, 1);
-            await _supabase.from('user_data').upsert({ user_id: currentUser.id, training_plans: userData.training_plans });
-            renderPlans();
+        async function addNutrition() {
+            if(userData.account_tier !== 'Premium') return openUpgrade();
+            const c = parseInt(document.getElementById('nutri-cal').value) || 0;
+            const p = parseInt(document.getElementById('nutri-pro').value) || 0;
+            
+            userData.nutrition_today.calories += c;
+            userData.nutrition_today.protein += p;
+            
+            await _supabase.from('user_data').upsert({ 
+                user_id: currentUser.id, 
+                nutrition_today: userData.nutrition_today 
+            });
+            applyUI();
+        }
+
+        function updateAICoach() {
+            const coach = document.getElementById('ai-suggestion');
+            if(userData.account_tier !== 'Premium') {
+                coach.innerText = "Premium nötig für AI-Analyse.";
+                return;
+            }
+            const plansCount = userData.training_plans.length;
+            if(plansCount === 0) coach.innerText = "Erstelle einen Plan, damit ich ihn analysieren kann.";
+            else coach.innerText = "Dein Volumen sieht gut aus. Heute Fokus auf progressive Steigerung (+2.5kg).";
+        }
+
+        async function loadLeaderboard() {
+            const container = document.getElementById('leaderboard-list');
+            container.innerHTML = "Lade Ranking...";
+            const { data } = await _supabase.from('user_data').select('gym_name, points, account_tier').order('points', {ascending: false}).limit(10);
+            
+            container.innerHTML = '';
+            data.forEach((user, i) => {
+                container.innerHTML += `
+                    <div class="leader-row ${i<3 ? 'rank-gold' : ''}">
+                        <span>#${i+1} ${user.gym_name || 'Athlet'}</span>
+                        <span>${user.points} PTS</span>
+                    </div>`;
+            });
+        }
+
+        function startRestTimer() {
+            const overlay = document.getElementById('timer-overlay');
+            overlay.style.display = 'block';
+            let time = 90;
+            const interval = setInterval(() => {
+                time--;
+                let min = Math.floor(time / 60);
+                let sec = time % 60;
+                overlay.innerText = `${min}:${sec < 10 ? '0' : ''}${sec}`;
+                if(time <= 0) {
+                    clearInterval(interval);
+                    overlay.style.display = 'none';
+                    alert("Pause vorbei! Nächster Satz.");
+                }
+            }, 1000);
+        }
+
+        function switchTab(tab, el) {
+            document.querySelectorAll('.tab-content').forEach(t => t.classList.add('hidden'));
+            document.getElementById('tab-' + tab).classList.remove('hidden');
+            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+            if(el) el.classList.add('active');
+            if(tab === 'leaderboard') loadLeaderboard();
+        }
+
+        async function updateSettings() {
+            userData.gym_name = document.getElementById('gym-input').value;
+            userData.locker_number = document.getElementById('locker-input').value;
+            await _supabase.from('user_data').upsert({ 
+                user_id: currentUser.id, 
+                gym_name: userData.gym_name, 
+                locker_number: userData.locker_number,
+                training_plans: userData.training_plans,
+                points: userData.points
+            });
+            alert("Gespeichert.");
+            applyUI();
         }
 
         function renderPlans() {
@@ -288,16 +327,40 @@
                         <div><h4 style="margin:0;">${plan.name}</h4></div>
                         <div class="plan-actions">
                             <i class="fas fa-trash" style="color: #444; cursor:pointer;" onclick="deletePlan(${i})"></i>
-                            <i class="fas fa-play-circle" style="font-size: 2rem; color: var(--neon-yellow); cursor:pointer;"></i>
+                            <i class="fas fa-play-circle" style="font-size: 2rem; color: var(--neon-yellow); cursor:pointer;" onclick="alert('Training gestartet! Zieh durch.')"></i>
                         </div>
                     </div>`;
             });
         }
 
+        async function deletePlan(i) {
+            if(confirm("Löschen?")) {
+                userData.training_plans.splice(i, 1);
+                await _supabase.from('user_data').upsert({ user_id: currentUser.id, training_plans: userData.training_plans });
+                renderPlans();
+            }
+        }
+
+        function showAuthView(view) {
+            document.querySelectorAll('.auth-container').forEach(c => c.classList.add('hidden'));
+            document.getElementById(view + '-view').classList.remove('hidden');
+        }
+
+        async function signIn() {
+            const { error } = await _supabase.auth.signInWithPassword({ email: document.getElementById('login-email').value, password: document.getElementById('login-password').value });
+            if (error) alert(error.message); else location.reload();
+        }
+
+        async function signUp() {
+            const { error } = await _supabase.auth.signUp({ email: document.getElementById('reg-email').value, password: document.getElementById('reg-password').value, options: { emailRedirectTo: currentPath } });
+            if (error) alert(error.message); else alert("Check deine Mails!");
+        }
+
+        async function signInWithDiscord() { await _supabase.auth.signInWithOAuth({ provider: 'discord', options: { redirectTo: currentPath } }); }
+        async function signOut() { await _supabase.auth.signOut(); location.reload(); }
         function openUpgrade() { document.getElementById('upgrade-modal').classList.remove('hidden'); }
         function closeUpgrade() { document.getElementById('upgrade-modal').classList.add('hidden'); }
         function checkPremium() { if(userData.account_tier !== 'Premium') openUpgrade(); }
-        async function signOut() { await _supabase.auth.signOut(); location.reload(); }
     </script>
 </body>
 </html>
