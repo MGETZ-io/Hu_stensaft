@@ -18,238 +18,137 @@
             background-color: var(--deep-black);
             background-image: radial-gradient(circle at 50% 50%, #1a1a1a 0%, #0a0a0a 100%);
             color: #fff;
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            font-family: 'Inter', sans-serif;
             margin: 0;
-            padding: 0;
-            -webkit-tap-highlight-color: transparent;
+            padding-bottom: 80px; /* Platz für Bottom-Nav */
+            overflow-x: hidden;
         }
-
-        /* --- AUTH SCREEN --- */
-        .auth-container {
-            height: 100vh;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            padding: 20px;
-        }
-
-        .logo-text {
-            font-size: 2.5rem;
-            font-weight: 900;
-            color: var(--neon-yellow);
-            text-transform: uppercase;
-            letter-spacing: -2px;
-            margin-bottom: 40px;
-            text-shadow: 0 0 20px rgba(204, 255, 0, 0.3);
-        }
-
-        .glass-card {
-            background: var(--glass);
-            backdrop-filter: blur(15px);
-            border: 1px solid var(--glass-border);
-            border-radius: 24px;
-            padding: 30px;
-            width: 100%;
-            max-width: 360px;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.4);
-        }
-
-        /* --- BUTTONS & INPUTS --- */
-        input {
-            width: 100%;
-            background: rgba(255,255,255,0.08);
-            border: 1px solid transparent;
-            padding: 15px;
-            border-radius: 12px;
-            color: white;
-            margin-bottom: 15px;
-            box-sizing: border-box;
-            transition: 0.3s;
-        }
-
-        input:focus {
-            outline: none;
-            border-color: var(--neon-yellow);
-            background: rgba(255,255,255,0.12);
-        }
-
-        .btn-primary {
-            width: 100%;
-            background: var(--neon-yellow);
-            color: black;
-            border: none;
-            padding: 16px;
-            border-radius: 12px;
-            font-weight: 800;
-            text-transform: uppercase;
-            cursor: pointer;
-            margin-bottom: 10px;
-        }
-
-        .btn-discord {
-            width: 100%;
-            background: #5865F2;
-            color: white;
-            border: none;
-            padding: 16px;
-            border-radius: 12px;
-            font-weight: 600;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-        }
-
-        /* --- DASHBOARD --- */
-        .header {
-            padding: 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-bottom: 1px solid var(--glass-border);
-        }
-
-        .nav-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 15px;
-            padding: 20px;
-        }
-
-        .stat-card {
-            background: var(--glass);
-            border: 1px solid var(--glass-border);
-            padding: 20px;
-            border-radius: 20px;
-            text-align: left;
-        }
-
-        .stat-card i { color: var(--neon-yellow); margin-bottom: 10px; font-size: 1.5rem; }
 
         .hidden { display: none !important; }
 
-        /* --- LIVE MODE OVERLAY --- */
-        #live-tracker {
-            position: fixed;
-            inset: 0;
-            background: var(--deep-black);
-            z-index: 999;
-            padding: 40px 20px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
+        /* --- AUTH SCREEN --- */
+        .auth-container { height: 100vh; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 20px; }
+        .logo-text { font-size: 2.5rem; font-weight: 900; color: var(--neon-yellow); text-transform: uppercase; margin-bottom: 30px; text-shadow: 0 0 15px rgba(204, 255, 0, 0.4); }
+        
+        .glass-card { background: var(--glass); backdrop-filter: blur(15px); border: 1px solid var(--glass-border); border-radius: 20px; padding: 25px; width: 100%; max-width: 350px; box-sizing: border-box; }
 
-        .timer-circle {
-            width: 200px;
-            height: 200px;
-            border: 8px solid var(--glass-border);
-            border-top-color: var(--neon-yellow);
-            border-radius: 50%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-size: 3rem;
-            font-weight: 900;
-            margin: 40px 0;
-            box-shadow: 0 0 30px rgba(204, 255, 0, 0.1);
-        }
+        input, textarea { width: 100%; background: rgba(255,255,255,0.08); border: 1px solid transparent; padding: 14px; border-radius: 12px; color: white; margin-bottom: 12px; box-sizing: border-box; }
+        input:focus { border-color: var(--neon-yellow); outline: none; }
 
-        .exercise-active {
-            font-size: 1.5rem;
-            color: var(--neon-yellow);
-            margin-bottom: 5px;
-            font-weight: 700;
-        }
+        .btn-primary { width: 100%; background: var(--neon-yellow); color: black; border: none; padding: 15px; border-radius: 12px; font-weight: 800; text-transform: uppercase; cursor: pointer; }
+        .btn-discord { width: 100%; background: #5865F2; color: white; border: none; padding: 15px; border-radius: 12px; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px; margin-top: 10px; }
+
+        /* --- DASHBOARD & TABS --- */
+        .header { padding: 20px; display: flex; justify-content: space-between; align-items: center; background: rgba(0,0,0,0.5); position: sticky; top: 0; z-index: 10; }
+        .tab-content { padding: 20px; animation: fadeIn 0.3s ease; }
+        
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        .plan-card { background: var(--glass); border: 1px solid var(--glass-border); padding: 20px; border-radius: 15px; margin-bottom: 15px; display: flex; justify-content: space-between; align-items: center; }
+        .plan-info h4 { margin: 0; color: var(--neon-yellow); }
+        .plan-info p { margin: 5px 0 0; font-size: 0.8rem; color: #888; }
+
+        /* --- BOTTOM NAVIGATION --- */
+        .bottom-nav { position: fixed; bottom: 0; width: 100%; background: rgba(10,10,10,0.9); backdrop-filter: blur(10px); display: flex; justify-content: space-around; padding: 15px 0; border-top: 1px solid var(--glass-border); z-index: 100; }
+        .nav-item { color: #555; font-size: 1.2rem; cursor: pointer; transition: 0.3s; }
+        .nav-item.active { color: var(--neon-yellow); transform: scale(1.2); }
+
+        /* --- LIVE OVERLAY --- */
+        #live-tracker { position: fixed; inset: 0; background: var(--deep-black); z-index: 1000; padding: 40px 20px; text-align: center; }
+        .timer-circle { width: 180px; height: 180px; border: 6px solid var(--neon-yellow); border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 2.5rem; font-weight: 900; margin: 30px auto; }
     </style>
 </head>
 <body>
 
     <div id="auth-section" class="auth-container">
-        <div class="logo-text">Hustensaft</div>
+        <div class="logo-text">HUSTENSAFT</div>
         <div class="glass-card">
-            <h3 style="text-align: center; margin-top: 0;">Access Elite Gym</h3>
             <input type="email" id="email" placeholder="Email">
             <input type="password" id="password" placeholder="Passwort">
             <button class="btn-primary" onclick="signIn()">Einloggen</button>
-            <div style="text-align: center; margin: 15px 0; color: #666; font-size: 0.8rem;">ODER</div>
             <button class="btn-discord" onclick="signInWithDiscord()">
-                <i class="fab fa-discord"></i> Mit Discord einloggen
+                <i class="fab fa-discord"></i> Discord Login
             </button>
-            <p onclick="signUp()" style="text-align: center; font-size: 0.8rem; margin-top: 20px; cursor: pointer; color: #888;">Noch kein Account? <span style="color: var(--neon-yellow);">Registrieren</span></p>
+            <p onclick="signUp()" style="text-align: center; font-size: 0.8rem; margin-top: 15px; color: #666; cursor: pointer;">Neu hier? <span style="color: var(--neon-yellow);">Account erstellen</span></p>
         </div>
     </div>
 
     <div id="app-content" class="hidden">
         <div class="header">
-            <span style="font-weight: 900; letter-spacing: 1px;">DASHBOARD</span>
-            <i class="fas fa-sign-out-alt" onclick="signOut()" style="color: #666;"></i>
+            <span style="font-weight: 900; letter-spacing: 2px;" id="user-display">ATHLET</span>
+            <i class="fas fa-dumbbell" style="color: var(--neon-yellow);"></i>
         </div>
 
-        <div class="container">
-            <div class="nav-grid">
-                <div class="stat-card">
-                    <i class="fas fa-dumbbell"></i>
-                    <div style="font-size: 0.8rem; color: #888;">Aktuelles Gym</div>
-                    <div id="gym-display" style="font-weight: bold;">Nicht gesetzt</div>
+        <div id="tab-training" class="tab-content">
+            <h3 style="margin-top: 0;">Dein Gym: <span id="gym-name-display" style="color: var(--neon-yellow);">Wird geladen...</span></h3>
+            <div id="plans-list-container">
                 </div>
-                <div class="stat-card" onclick="alert('Feature coming soon')">
-                    <i class="fas fa-fire"></i>
-                    <div style="font-size: 0.8rem; color: #888;">Streak</div>
-                    <div style="font-weight: bold;">0 Tage</div>
-                </div>
-            </div>
+        </div>
 
-            <div style="padding: 0 20px;">
-                <h3 style="margin-bottom: 15px;">Deine Pläne</h3>
-                <div id="plans-list">
-                    </div>
-                
-                <div class="glass-card" style="margin-top: 20px; max-width: 100%;">
-                    <h4 style="margin: 0 0 15px 0; color: var(--neon-yellow);">Neuer Plan</h4>
-                    <input type="text" id="plan-name" placeholder="Name (z.B. Heavy Push)">
-                    <input type="text" id="plan-exercises" placeholder="Übungen (Bankdrücken, Dips...)">
-                    <button class="btn-primary" style="padding: 10px;" onclick="savePlan()">Erstellen</button>
-                </div>
+        <div id="tab-add" class="tab-content hidden">
+            <h3>Plan erstellen</h3>
+            <div class="glass-card" style="max-width: 100%;">
+                <input type="text" id="new-plan-name" placeholder="Name (z.B. Beine)">
+                <textarea id="new-plan-exercises" placeholder="Übungen (z.B. Kniebeugen 3x10, Presse 3x12)" rows="4"></textarea>
+                <button class="btn-primary" onclick="savePlan()">Speichern</button>
             </div>
+        </div>
+
+        <div id="tab-settings" class="tab-content hidden">
+            <h3>Einstellungen</h3>
+            <div class="glass-card" style="max-width: 100%;">
+                <label style="font-size: 0.8rem; color: #888;">Gym Standort festlegen</label>
+                <input type="text" id="gym-input" placeholder="Z.B. McFit Berlin Mitte">
+                <button class="btn-primary" style="background: #333; color: white;" onclick="updateGym()">Gym aktualisieren</button>
+                <hr style="border: 0; border-top: 1px solid var(--glass-border); margin: 20px 0;">
+                <button class="btn-primary" style="background: #aa0000; color: white;" onclick="signOut()">Ausloggen</button>
+            </div>
+        </div>
+
+        <div class="bottom-nav">
+            <div class="nav-item active" onclick="switchTab('training', this)"><i class="fas fa-home"></i></div>
+            <div class="nav-item" onclick="switchTab('add', this)"><i class="fas fa-plus-circle"></i></div>
+            <div class="nav-item" onclick="switchTab('settings', this)"><i class="fas fa-user-cog"></i></div>
         </div>
     </div>
 
     <div id="live-tracker" class="hidden">
-        <div style="color: #666; text-transform: uppercase; font-size: 0.8rem;">Aktives Training</div>
-        <div id="live-plan-title" style="font-size: 1.8rem; font-weight: 900; margin-top: 10px;">PLAN NAME</div>
-        
+        <h2 id="live-title" style="color: var(--neon-yellow);">NAME</h2>
         <div class="timer-circle" id="timer-display">01:00</div>
-        
-        <div id="live-exercise-list" class="exercise-active">Übung lädt...</div>
-        
-        <div style="width: 100%; max-width: 300px; margin-top: auto;">
-            <button class="btn-primary" onclick="startTimer()">Pause Starten</button>
-            <button class="btn-discord" style="background: #222;" onclick="stopLiveMode()">Training beenden</button>
-        </div>
+        <p id="live-exercises" style="color: #888; margin-bottom: 40px;"></p>
+        <button class="btn-primary" onclick="startTimer()">Pause Starten</button>
+        <button class="btn-primary" style="background: #222; color: white; margin-top: 15px;" onclick="stopLiveMode()">Beenden</button>
     </div>
 
     <script>
-        const SUPABASE_URL = 'https://zalbnzbqtsncnjhjgiog.supabase.co';
-        const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InphbGJuemJxdHNuY25qaGpnaW9nIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzEwMTU4MTksImV4cCI6MjA4NjU5MTgxOX0.L_n6P-cZD3tOtI2jlrJniYKhNTQpkt7MZUu1xMMbPYQ';
+        const SUPABASE_URL = 'DEINE_URL_HIER';
+        const SUPABASE_KEY = 'DEIN_ANON_KEY_HIER';
         const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
         let currentUser = null;
-        let userPlans = [];
+        let userData = { gym_name: '', training_plans: [] };
 
         window.onload = async () => {
             const { data: { session } } = await _supabase.auth.getSession();
             if (session) {
                 currentUser = session.user;
+                document.getElementById('user-display').innerText = currentUser.email.split('@')[0].toUpperCase();
                 showApp();
-                loadUserData();
+                loadData();
             }
         };
 
+        // --- NAVIGATION ---
+        function switchTab(tabName, el) {
+            document.querySelectorAll('.tab-content').forEach(t => t.classList.add('hidden'));
+            document.getElementById('tab-' + tabName).classList.remove('hidden');
+            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+            el.classList.add('active');
+        }
+
+        // --- AUTH ---
         async function signInWithDiscord() {
-            const { data, error } = await _supabase.auth.signInWithOAuth({
+            await _supabase.auth.signInWithOAuth({
                 provider: 'discord',
                 options: { redirectTo: window.location.origin + window.location.pathname }
             });
@@ -265,8 +164,11 @@
         async function signUp() {
             const email = document.getElementById('email').value;
             const password = document.getElementById('password').value;
-            const { error } = await _supabase.auth.signUp({ email, password });
-            if (error) alert(error.message); else alert("Check deine Mails!");
+            const { error } = await _supabase.auth.signUp({
+                email, password,
+                options: { emailRedirectTo: window.location.origin + window.location.pathname }
+            });
+            if (error) alert(error.message); else alert("Check deine Mails zur Bestätigung!");
         }
 
         function showApp() {
@@ -274,61 +176,78 @@
             document.getElementById('app-content').classList.remove('hidden');
         }
 
-        async function loadUserData() {
+        // --- DATA MANAGEMENT ---
+        async function loadData() {
             const { data } = await _supabase.from('user_data').select('*').eq('user_id', currentUser.id).single();
             if (data) {
-                document.getElementById('gym-display').innerText = data.gym_name || 'Home Gym';
-                userPlans = data.training_plans || [];
+                userData = data;
+                document.getElementById('gym-name-display').innerText = data.gym_name || 'Nicht festgelegt';
+                document.getElementById('gym-input').value = data.gym_name || '';
                 renderPlans();
             }
         }
 
+        async function updateGym() {
+            const newGym = document.getElementById('gym-input').value;
+            await _supabase.from('user_data').upsert({ user_id: currentUser.id, gym_name: newGym });
+            document.getElementById('gym-name-display').innerText = newGym;
+            alert("Gym gespeichert!");
+        }
+
         async function savePlan() {
-            const name = document.getElementById('plan-name').value;
-            const exercises = document.getElementById('plan-exercises').value;
-            userPlans.push({ name, exercises });
-            await _supabase.from('user_data').upsert({ user_id: currentUser.id, training_plans: userPlans });
+            const name = document.getElementById('new-plan-name').value;
+            const exercises = document.getElementById('new-plan-exercises').value;
+            if(!name) return alert("Gib einen Namen ein!");
+            
+            userData.training_plans.push({ name, exercises });
+            await _supabase.from('user_data').upsert({ 
+                user_id: currentUser.id, 
+                training_plans: userData.training_plans,
+                gym_name: document.getElementById('gym-input').value
+            });
+            
+            document.getElementById('new-plan-name').value = '';
+            document.getElementById('new-plan-exercises').value = '';
             renderPlans();
+            alert("Plan gespeichert!");
         }
 
         function renderPlans() {
-            const list = document.getElementById('plans-list');
-            list.innerHTML = '';
-            userPlans.forEach((plan, index) => {
-                list.innerHTML += `
-                    <div class="stat-card" style="margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; width: 100%; box-sizing: border-box;">
-                        <div>
-                            <div style="font-weight: bold; color: var(--neon-yellow);">${plan.name}</div>
-                            <div style="font-size: 0.7rem; color: #666;">${plan.exercises.substring(0, 30)}...</div>
+            const container = document.getElementById('plans-list-container');
+            container.innerHTML = '';
+            userData.training_plans.forEach((plan, i) => {
+                container.innerHTML += `
+                    <div class="plan-card">
+                        <div class="plan-info">
+                            <h4>${plan.name}</h4>
+                            <p>${plan.exercises.substring(0, 35)}...</p>
                         </div>
-                        <i class="fas fa-play-circle" style="font-size: 1.8rem;" onclick="startLiveMode(${index})"></i>
+                        <i class="fas fa-play-circle" style="font-size: 2rem; color: var(--neon-yellow);" onclick="startLive(${i})"></i>
                     </div>`;
             });
         }
 
-        // --- LIVE MODE ---
-        let timerInterval;
-        function startLiveMode(index) {
-            const plan = userPlans[index];
-            document.getElementById('live-plan-title').innerText = plan.name;
-            document.getElementById('live-exercise-list').innerText = plan.exercises;
+        // --- LIVE TRACKING ---
+        let timer;
+        function startLive(i) {
+            const p = userData.training_plans[i];
+            document.getElementById('live-title').innerText = p.name;
+            document.getElementById('live-exercises').innerText = p.exercises;
             document.getElementById('live-tracker').classList.remove('hidden');
         }
 
         function stopLiveMode() {
             document.getElementById('live-tracker').classList.add('hidden');
-            clearInterval(timerInterval);
+            clearInterval(timer);
         }
 
         function startTimer() {
-            clearInterval(timerInterval);
-            let timeLeft = 60;
-            timerInterval = setInterval(() => {
-                timeLeft--;
-                let mins = Math.floor(timeLeft / 60);
-                let secs = timeLeft % 60;
-                document.getElementById('timer-display').innerText = `${mins}:${secs < 10 ? '0' : ''}${secs}`;
-                if (timeLeft <= 0) { clearInterval(timerInterval); alert("GO! Nächster Satz!"); }
+            clearInterval(timer);
+            let time = 60;
+            timer = setInterval(() => {
+                time--;
+                document.getElementById('timer-display').innerText = `00:${time < 10 ? '0'+time : time}`;
+                if(time <= 0) { clearInterval(timer); alert("PAUSE VORBEI!"); }
             }, 1000);
         }
 
