@@ -32,23 +32,30 @@
             display: flex; flex-direction: column; justify-content: center; align-items: center;
             z-index: 9999; transition: opacity 0.5s ease;
         }
-        .splash-logo { font-size: 3rem; font-weight: 900; color: var(--neon-yellow); text-transform: uppercase; animation: pulse 1.5s infinite; }
+        .splash-logo { font-size: 3.5rem; font-weight: 900; color: var(--neon-yellow); text-transform: uppercase; letter-spacing: -3px; animation: pulse 1.5s infinite; }
 
         /* --- UI ELEMENTS --- */
         .auth-container { height: 100vh; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 20px; }
         .glass-card { background: var(--glass); backdrop-filter: blur(15px); border: 1px solid var(--glass-border); border-radius: 20px; padding: 25px; width: 100%; max-width: 350px; box-sizing: border-box; }
         input, textarea { width: 100%; background: rgba(255,255,255,0.08); border: 1px solid transparent; padding: 14px; border-radius: 12px; color: white; margin-bottom: 12px; box-sizing: border-box; font-size: 16px; }
         .btn-primary { width: 100%; background: var(--neon-yellow); color: black; border: none; padding: 15px; border-radius: 12px; font-weight: 800; text-transform: uppercase; cursor: pointer; }
-        
+        .btn-discord { width: 100%; background: #5865F2; color: white; border: none; padding: 15px; border-radius: 12px; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px; margin-top: 10px; }
+
         /* --- DASHBOARD --- */
         .header { padding: 20px; display: flex; justify-content: space-between; align-items: center; background: rgba(0,0,0,0.5); border-bottom: 1px solid var(--glass-border); }
         .tab-content { padding: 20px; animation: fadeIn 0.3s ease; height: calc(100vh - 160px); overflow-y: auto; }
         .plan-card { background: var(--glass); border: 1px solid var(--glass-border); padding: 20px; border-radius: 15px; margin-bottom: 15px; display: flex; justify-content: space-between; align-items: center; }
         .ad-banner { background: linear-gradient(90deg, #1a1a1a, #222); border: 1px dashed var(--neon-yellow); border-radius: 15px; padding: 15px; margin: 20px 0; display: flex; align-items: center; gap: 15px; text-decoration: none; color: white; font-size: 0.8rem; }
 
+        .locker-info { background: var(--neon-yellow); color: black; padding: 10px; border-radius: 10px; margin-bottom: 20px; font-weight: 800; display: flex; justify-content: space-between; align-items: center; }
+
         .bottom-nav { position: fixed; bottom: 0; width: 100%; background: rgba(10,10,10,0.95); backdrop-filter: blur(15px); display: flex; justify-content: space-around; padding: 20px 0; border-top: 1px solid var(--glass-border); z-index: 100; }
         .nav-item { color: #555; font-size: 1.3rem; cursor: pointer; }
         .nav-item.active { color: var(--neon-yellow); }
+
+        /* --- LIVE MODUS --- */
+        #live-tracker { position: fixed; inset: 0; background: var(--deep-black); z-index: 10000; padding: 40px 20px; text-align: center; display: flex; flex-direction: column; }
+        .timer-display { font-size: 5rem; font-weight: 900; color: var(--neon-yellow); margin: 30px 0; }
 
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
         @keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.05); } }
@@ -58,15 +65,20 @@
 
     <div id="splash-screen" class="hidden">
         <div class="splash-logo">Hustensaft</div>
-        <div id="splash-user-text">Elite Training</div>
+        <div id="splash-user-text" style="font-weight: bold; margin-top: 10px;">Elite Training</div>
     </div>
 
     <div id="auth-section" class="auth-container hidden">
-        <div style="font-size: 2rem; font-weight: 900; color: var(--neon-yellow); margin-bottom: 20px;">HUSTENSAFT</div>
+        <div style="font-size: 2.5rem; font-weight: 900; color: var(--neon-yellow); margin-bottom: 20px; letter-spacing: -2px;">HUSTENSAFT</div>
         <div class="glass-card">
             <input type="email" id="email" placeholder="Email">
             <input type="password" id="password" placeholder="Passwort">
             <button class="btn-primary" onclick="signIn()">Einloggen</button>
+            
+            <button class="btn-discord" onclick="signInWithDiscord()">
+                <i class="fab fa-discord"></i> Discord Login
+            </button>
+
             <p onclick="signUp()" style="text-align: center; font-size: 0.8rem; margin-top: 15px; color: #666; cursor: pointer;">Registrieren</p>
         </div>
     </div>
@@ -78,8 +90,14 @@
         </div>
 
         <div id="tab-training" class="tab-content">
+            <div class="locker-info">
+                <span><i class="fas fa-key"></i> SPIND:</span>
+                <span id="locker-display">N/A</span>
+            </div>
+
             <h3 style="margin-top: 0;">Trainingspläne</h3>
             <div id="plans-list-container"></div>
+            
             <a href="https://hostvora.com" target="_blank" class="ad-banner">
                 <i class="fas fa-server"></i>
                 <div class="ad-text"><b>Hostvora.com</b><br>Code: HustensaftFitness5</div>
@@ -90,7 +108,7 @@
             <h3>Plan erstellen</h3>
             <div class="glass-card" style="max-width: 100%;">
                 <input type="text" id="new-plan-name" placeholder="Name">
-                <textarea id="new-plan-exercises" placeholder="Übungen..." rows="4"></textarea>
+                <textarea id="new-plan-exercises" placeholder="Übungen & Sätze..." rows="5"></textarea>
                 <button class="btn-primary" onclick="savePlan()">Speichern</button>
             </div>
         </div>
@@ -98,8 +116,13 @@
         <div id="tab-settings" class="tab-content hidden">
             <h3>Einstellungen</h3>
             <div class="glass-card" style="max-width: 100%;">
-                <input type="text" id="gym-input" placeholder="Dein Gym">
-                <button class="btn-primary" onclick="updateGym()">Gym Speichern</button>
+                <label style="color: #666; font-size: 0.7rem;">DEIN GYM</label>
+                <input type="text" id="gym-input" placeholder="Z.B. McFit">
+                
+                <label style="color: #666; font-size: 0.7rem;">SPINDNUMMER</label>
+                <input type="text" id="locker-input" placeholder="Z.B. 423">
+                
+                <button class="btn-primary" onclick="updateSettings()">Alles Speichern</button>
                 <button class="btn-primary" style="background: #aa0000; color: white; margin-top: 20px;" onclick="signOut()">Logout</button>
             </div>
         </div>
@@ -111,13 +134,25 @@
         </div>
     </div>
 
+    <div id="live-tracker" class="hidden">
+        <h2 id="live-title" style="color: var(--neon-yellow); text-transform: uppercase;">TRAINING</h2>
+        <div id="timer-display" class="timer-display">01:00</div>
+        <div style="flex-grow: 1; overflow-y: auto; text-align: left; padding: 20px; background: rgba(255,255,255,0.05); border-radius: 15px;">
+            <p id="live-exercises" style="white-space: pre-wrap; font-size: 1.1rem; line-height: 1.6;"></p>
+        </div>
+        <div style="padding-top: 20px;">
+            <button class="btn-primary" onclick="startTimer()">Pause (60s)</button>
+            <button class="btn-primary" style="background: #222; color: white; margin-top: 15px;" onclick="stopLiveMode()">Beenden</button>
+        </div>
+    </div>
+
     <script>
         const SUPABASE_URL = 'https://zalbnzbqtsncnjhjgiog.supabase.co';
         const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InphbGJuemJxdHNuY25qaGpnaW9nIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzEwMTU4MTksImV4cCI6MjA4NjU5MTgxOX0.L_n6P-cZD3tOtI2jlrJniYKhNTQpkt7MZUu1xMMbPYQ';
         const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
         let currentUser = null;
-        let userData = { gym_name: '', training_plans: [] };
+        let userData = { gym_name: '', training_plans: [], locker_number: '' };
 
         window.onload = async () => {
             const { data: { session } } = await _supabase.auth.getSession();
@@ -125,10 +160,8 @@
                 currentUser = session.user;
                 const splash = document.getElementById('splash-screen');
                 splash.classList.remove('hidden');
-                document.getElementById('splash-user-text').innerText = "Willkommen, " + currentUser.email.split('@')[0].toUpperCase();
-                
+                document.getElementById('splash-user-text').innerText = "WILLKOMMEN, " + currentUser.email.split('@')[0].toUpperCase();
                 await loadData();
-                
                 setTimeout(() => {
                     splash.style.opacity = '0';
                     setTimeout(() => {
@@ -143,29 +176,41 @@
         };
 
         async function loadData() {
-            const { data, error } = await _supabase.from('user_data').select('*').eq('user_id', currentUser.id).single();
+            const { data } = await _supabase.from('user_data').select('*').eq('user_id', currentUser.id).single();
             if (data) {
                 userData = data;
+                document.getElementById('user-display').innerText = currentUser.email.split('@')[0].toUpperCase();
                 document.getElementById('gym-badge').innerText = "GYM: " + (data.gym_name || '-');
+                document.getElementById('locker-display').innerText = data.locker_number || 'N/A';
                 document.getElementById('gym-input').value = data.gym_name || '';
+                document.getElementById('locker-input').value = data.locker_number || '';
                 renderPlans();
             }
         }
 
-        async function saveToDatabase() {
-            const { error } = await _supabase.from('user_data').upsert({ 
-                user_id: currentUser.id, 
-                gym_name: userData.gym_name,
-                training_plans: userData.training_plans 
-            }, { onConflict: 'user_id' });
-            if(error) console.error("Save Error:", error);
+        async function signInWithDiscord() {
+            await _supabase.auth.signInWithOAuth({
+                provider: 'discord',
+                options: { redirectTo: window.location.origin + window.location.pathname }
+            });
         }
 
-        async function updateGym() {
+        async function saveToDatabase() {
+            await _supabase.from('user_data').upsert({ 
+                user_id: currentUser.id, 
+                gym_name: userData.gym_name,
+                locker_number: userData.locker_number,
+                training_plans: userData.training_plans 
+            });
+        }
+
+        async function updateSettings() {
             userData.gym_name = document.getElementById('gym-input').value;
+            userData.locker_number = document.getElementById('locker-input').value;
             await saveToDatabase();
             document.getElementById('gym-badge').innerText = "GYM: " + userData.gym_name;
-            alert("Gym gespeichert!");
+            document.getElementById('locker-display').innerText = userData.locker_number || 'N/A';
+            alert("Daten gespeichert!");
         }
 
         async function savePlan() {
@@ -175,6 +220,8 @@
             userData.training_plans.push({ name, exercises });
             await saveToDatabase();
             renderPlans();
+            document.getElementById('new-plan-name').value = '';
+            document.getElementById('new-plan-exercises').value = '';
             switchTab('training', document.querySelector('.nav-item'));
         }
 
@@ -182,8 +229,35 @@
             const container = document.getElementById('plans-list-container');
             container.innerHTML = '';
             userData.training_plans.forEach((plan, i) => {
-                container.innerHTML += `<div class="plan-card"><div><h4>${plan.name}</h4></div><i class="fas fa-play-circle" style="font-size: 2rem; color: var(--neon-yellow);"></i></div>`;
+                container.innerHTML += `
+                    <div class="plan-card">
+                        <div><h4 style="margin:0;">${plan.name}</h4></div>
+                        <i class="fas fa-play-circle" style="font-size: 2.2rem; color: var(--neon-yellow);" onclick="startLive(${i})"></i>
+                    </div>`;
             });
+        }
+
+        let timer;
+        function startLive(i) {
+            const p = userData.training_plans[i];
+            document.getElementById('live-title').innerText = p.name;
+            document.getElementById('live-exercises').innerText = p.exercises;
+            document.getElementById('live-tracker').classList.remove('hidden');
+        }
+
+        function stopLiveMode() {
+            document.getElementById('live-tracker').classList.add('hidden');
+            clearInterval(timer);
+        }
+
+        function startTimer() {
+            clearInterval(timer);
+            let time = 60;
+            timer = setInterval(() => {
+                time--;
+                document.getElementById('timer-display').innerText = `00:${time < 10 ? '0'+time : time}`;
+                if(time <= 0) { clearInterval(timer); alert("PAUSE VORBEI!"); }
+            }, 1000);
         }
 
         function switchTab(tabName, el) {
@@ -204,7 +278,8 @@
         async function signUp() {
             const { error } = await _supabase.auth.signUp({
                 email: document.getElementById('email').value,
-                password: document.getElementById('password').value
+                password: document.getElementById('password').value,
+                options: { emailRedirectTo: window.location.origin + window.location.pathname }
             });
             if (error) alert(error.message); else alert("Check deine Mails!");
         }
