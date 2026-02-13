@@ -3,82 +3,104 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hustensaft App | Training</title>
+    <title>Hustensaft Fitness | PRO APP</title>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
-        :root { --yellow: #ffcc00; --black: #1a1a1a; }
-        body { font-family: sans-serif; background: var(--black); color: white; margin: 0; display: flex; justify-content: center; align-items: center; min-height: 100vh; }
+        :root { --yellow: #ffcc00; --black: #111; --dark-gray: #222; --light-gray: #444; }
+        body { font-family: 'Segoe UI', sans-serif; background: var(--black); color: white; margin: 0; padding: 0; }
         .hidden { display: none !important; }
+        .container { max-width: 600px; margin: auto; padding: 20px; }
         
-        /* Card Style */
-        .card { background: #222; border: 2px solid var(--yellow); padding: 30px; border-radius: 10px; width: 100%; max-width: 400px; text-align: center; }
-        h2 { color: var(--yellow); text-transform: uppercase; margin-bottom: 20px; }
-        
-        input { width: 90%; padding: 12px; margin: 10px 0; background: #333; border: 1px solid #444; color: white; border-radius: 5px; }
-        button { width: 100%; padding: 12px; margin-top: 10px; border: none; border-radius: 5px; font-weight: bold; cursor: pointer; text-transform: uppercase; }
-        .btn-main { background: var(--yellow); color: var(--black); }
-        .btn-sub { background: transparent; color: var(--yellow); border: 1px solid var(--yellow); }
+        /* Auth & Design Elements */
+        .card { background: var(--dark-gray); border: 2px solid var(--yellow); padding: 20px; border-radius: 10px; margin-bottom: 20px; }
+        h2, h3 { color: var(--yellow); text-transform: uppercase; margin-top: 0; }
+        input, select { width: 100%; padding: 12px; margin: 8px 0; background: #000; border: 1px solid var(--light-gray); color: white; border-radius: 5px; box-sizing: border-box; }
+        button { width: 100%; padding: 12px; margin-top: 10px; border: none; border-radius: 5px; font-weight: bold; cursor: pointer; text-transform: uppercase; transition: 0.3s; }
+        .btn-main { background: var(--yellow); color: #000; }
+        .btn-sub { background: var(--light-gray); color: white; }
+        .btn-delete { background: #cc0000; color: white; }
 
-        /* App-Inhalt Styles */
-        #app-content { width: 90%; max-width: 600px; }
-        .workout-item { background: #333; padding: 15px; margin: 10px 0; border-left: 4px solid var(--yellow); text-align: left; }
+        /* Training & Live Mode */
+        .plan-item { background: #333; padding: 15px; border-radius: 5px; margin-bottom: 10px; border-left: 5px solid var(--yellow); }
+        #live-tracker { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--black); z-index: 100; padding: 20px; box-sizing: border-box; text-align: center; }
+        .timer { font-size: 3rem; color: var(--yellow); margin: 20px 0; font-weight: bold; }
     </style>
 </head>
 <body>
 
-    <div id="auth-section" class="card">
-        <h2>Member Login</h2>
-        <input type="email" id="email" placeholder="E-Mail Adresse">
-        <input type="password" id="password" placeholder="Passwort">
-        <button class="btn-main" onclick="signIn()">Einloggen</button>
-        <button class="btn-sub" onclick="signUp()">Account erstellen</button>
+    <div class="container">
+        <div id="auth-section" class="card">
+            <h2>Hustensaft Fitness Login</h2>
+            <input type="email" id="email" placeholder="E-Mail">
+            <input type="password" id="password" placeholder="Passwort">
+            <button class="btn-main" onclick="signIn()">Einloggen</button>
+            <button class="btn-sub" onclick="signUp()">Registrieren</button>
+        </div>
+
+        <div id="app-content" class="hidden">
+            <div style="display: flex; justify-content: space-between;">
+                <h3>Dashboard</h3>
+                <button onclick="signOut()" style="width:auto; padding:5px 10px;">Logout</button>
+            </div>
+
+            <div class="card">
+                <h3>Mein Gym</h3>
+                <input type="text" id="gym-input" placeholder="Name deines Gyms (z.B. McFit Berlin)">
+                <button class="btn-main" onclick="saveGym()">Gym Speichern</button>
+            </div>
+
+            <div class="card">
+                <h3>Neuer Trainingsplan</h3>
+                <input type="text" id="plan-name" placeholder="Name des Plans (z.B. Push Day)">
+                <textarea id="plan-exercises" placeholder="Übungen (z.B. Bankdrücken 3x10, Dips 3x12)" style="width:100%; height:80px; background:#000; color:white; border:1px solid var(--light-gray); padding:10px; box-sizing:border-box;"></textarea>
+                <button class="btn-main" onclick="savePlan()">Plan speichern</button>
+            </div>
+
+            <div id="plans-list">
+                <h3>Deine Pläne</h3>
+                </div>
+        </div>
     </div>
 
-    <div id="app-content" class="hidden">
-        <div style="display: flex; justify-content: space-between; align-items: center;">
-            <h2 style="margin: 0;">DEIN TRAINING</h2>
-            <button onclick="signOut()" style="width: auto; padding: 5px 15px;">Logout</button>
-        </div>
-        
-        <div class="workout-item">
-            <strong>Brust & Trizeps</strong>
-            <p>4 Sätze Bankdrücken, 3 Sätze Dips</p>
-        </div>
-        <div class="workout-item">
-            <strong>Rücken & Bizeps</strong>
-            <p>4 Sätze Klimmzüge, 3 Sätze Curls</p>
-        </div>
-        
-        <p style="text-align: center; color: var(--yellow);">Training wird synchronisiert...</p>
+    <div id="live-tracker" class="hidden">
+        <h2 id="live-plan-title">Training läuft...</h2>
+        <div id="live-exercise-list" style="text-align:left; margin-bottom:20px;"></div>
+        <div class="timer" id="timer-display">01:00</div>
+        <button class="btn-main" onclick="startTimer()">Pause Starten (60s)</button>
+        <button class="btn-delete" onclick="stopLiveMode()" style="margin-top:20px;">Training beenden</button>
     </div>
 
     <script>
-        // --- KONFIGURATION ---
-        // Ersetze diese Werte mit deinen Daten von Supabase.com
-        const SUPABASE_URL = 'DEINE_URL_HIER';
-        const SUPABASE_KEY = 'DEIN_ANON_KEY_HIER';
+        // --- KONFIGURATION (Setze hier deine Daten ein!) ---
+        const SUPABASE_URL = 'https://zalbnzbqtsncnjhjgiog.supabase.co';
+        const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InphbGJuemJxdHNuY25qaGpnaW9nIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzEwMTU4MTksImV4cCI6MjA4NjU5MTgxOX0.L_n6P-cZD3tOtI2jlrJniYKhNTQpkt7MZUu1xMMbPYQ';
         const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-        // Prüfen ob User bereits eingeloggt ist
+        let currentUser = null;
+        let userPlans = [];
+
+        // Auth Check
         window.onload = async () => {
             const { data } = await _supabase.auth.getSession();
-            if (data.session) showApp();
+            if (data.session) {
+                currentUser = data.session.user;
+                showApp();
+                loadUserData();
+            }
         };
+
+        async function signIn() {
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const { data, error } = await _supabase.auth.signInWithPassword({ email, password });
+            if (error) alert(error.message); else location.reload();
+        }
 
         async function signUp() {
             const email = document.getElementById('email').value;
             const password = document.getElementById('password').value;
             const { error } = await _supabase.auth.signUp({ email, password });
-            if (error) alert("Fehler: " + error.message);
-            else alert("Erfolg! Prüfe deine E-Mails zur Bestätigung.");
-        }
-
-        async function signIn() {
-            const email = document.getElementById('email').value;
-            const password = document.getElementById('password').value;
-            const { error } = await _supabase.auth.signInWithPassword({ email, password });
-            if (error) alert("Login fehlgeschlagen: " + error.message);
-            else showApp();
+            if (error) alert(error.message); else alert("Check deine E-Mails!");
         }
 
         function showApp() {
@@ -86,10 +108,73 @@
             document.getElementById('app-content').classList.remove('hidden');
         }
 
-        async function signOut() {
-            await _supabase.auth.signOut();
-            location.reload();
+        // Daten laden
+        async function loadUserData() {
+            const { data, error } = await _supabase.from('user_data').select('*').eq('user_id', currentUser.id).single();
+            if (data) {
+                document.getElementById('gym-input').value = data.gym_name || '';
+                userPlans = data.training_plans || [];
+                renderPlans();
+            }
         }
+
+        async function saveGym() {
+            const gym = document.getElementById('gym-input').value;
+            await _supabase.from('user_data').upsert({ user_id: currentUser.id, gym_name: gym });
+            alert("Gym gespeichert!");
+        }
+
+        async function savePlan() {
+            const name = document.getElementById('plan-name').value;
+            const exercises = document.getElementById('plan-exercises').value;
+            userPlans.push({ name, exercises });
+            await _supabase.from('user_data').upsert({ user_id: currentUser.id, training_plans: userPlans });
+            renderPlans();
+            alert("Plan gespeichert!");
+        }
+
+        function renderPlans() {
+            const list = document.getElementById('plans-list');
+            list.innerHTML = '<h3>Deine Pläne</h3>';
+            userPlans.forEach((plan, index) => {
+                list.innerHTML += `
+                    <div class="plan-item">
+                        <strong>${plan.name}</strong><br><small>${plan.exercises}</small>
+                        <button class="btn-main" style="margin-top:10px; padding:5px;" onclick="startLiveMode(${index})">Live Tracking</button>
+                    </div>`;
+            });
+        }
+
+        // LIVE TRACKING LOGIK
+        let timerInterval;
+        function startLiveMode(index) {
+            const plan = userPlans[index];
+            document.getElementById('live-plan-title').innerText = plan.name;
+            document.getElementById('live-exercise-list').innerText = plan.exercises;
+            document.getElementById('live-tracker').classList.remove('hidden');
+        }
+
+        function stopLiveMode() {
+            document.getElementById('live-tracker').classList.add('hidden');
+            clearInterval(timerInterval);
+        }
+
+        function startTimer() {
+            clearInterval(timerInterval);
+            let timeLeft = 60;
+            timerInterval = setInterval(() => {
+                timeLeft--;
+                let mins = Math.floor(timeLeft / 60);
+                let secs = timeLeft % 60;
+                document.getElementById('timer-display').innerText = `${mins}:${secs < 10 ? '0' : ''}${secs}`;
+                if (timeLeft <= 0) {
+                    clearInterval(timerInterval);
+                    alert("Satz-Pause vorbei! Weiter geht's!");
+                }
+            }, 1000);
+        }
+
+        async function signOut() { await _supabase.auth.signOut(); location.reload(); }
     </script>
 </body>
 </html>
