@@ -21,81 +21,52 @@
             font-family: 'Inter', sans-serif;
             margin: 0;
             padding-bottom: 90px;
-            overflow: hidden; /* Verhindert Scrollen während Splash */
+            overflow: hidden; 
         }
 
         .hidden { display: none !important; }
 
-        /* --- SPLASH SCREEN (McFit Style) --- */
+        /* --- SPLASH SCREEN --- */
         #splash-screen {
-            position: fixed;
-            inset: 0;
-            background: var(--deep-black);
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            z-index: 9999;
-            transition: opacity 0.5s ease;
+            position: fixed; inset: 0; background: var(--deep-black);
+            display: flex; flex-direction: column; justify-content: center; align-items: center;
+            z-index: 9999; transition: opacity 0.5s ease;
         }
+        .splash-logo { font-size: 3rem; font-weight: 900; color: var(--neon-yellow); text-transform: uppercase; animation: pulse 1.5s infinite; }
 
-        .splash-logo {
-            font-size: 3rem;
-            font-weight: 900;
-            color: var(--neon-yellow);
-            text-transform: uppercase;
-            letter-spacing: -2px;
-            margin-bottom: 10px;
-            animation: pulse 1.5s infinite;
-        }
-
-        .splash-welcome {
-            font-size: 1.2rem;
-            color: white;
-            opacity: 0;
-            animation: fadeInText 0.8s forwards 0.5s;
-        }
-
-        @keyframes pulse {
-            0% { transform: scale(1); text-shadow: 0 0 0px rgba(204, 255, 0, 0); }
-            50% { transform: scale(1.05); text-shadow: 0 0 20px rgba(204, 255, 0, 0.5); }
-            100% { transform: scale(1); text-shadow: 0 0 0px rgba(204, 255, 0, 0); }
-        }
-
-        @keyframes fadeInText { to { opacity: 1; } }
-
-        /* --- AUTH & DASHBOARD (Rest wie gehabt) --- */
+        /* --- UI ELEMENTS --- */
         .auth-container { height: 100vh; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 20px; }
-        .logo-text { font-size: 2.5rem; font-weight: 900; color: var(--neon-yellow); text-transform: uppercase; margin-bottom: 30px; }
         .glass-card { background: var(--glass); backdrop-filter: blur(15px); border: 1px solid var(--glass-border); border-radius: 20px; padding: 25px; width: 100%; max-width: 350px; box-sizing: border-box; }
         input, textarea { width: 100%; background: rgba(255,255,255,0.08); border: 1px solid transparent; padding: 14px; border-radius: 12px; color: white; margin-bottom: 12px; box-sizing: border-box; font-size: 16px; }
         .btn-primary { width: 100%; background: var(--neon-yellow); color: black; border: none; padding: 15px; border-radius: 12px; font-weight: 800; text-transform: uppercase; cursor: pointer; }
-        .btn-discord { width: 100%; background: #5865F2; color: white; border: none; padding: 15px; border-radius: 12px; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px; margin-top: 10px; }
-        .ad-banner { background: linear-gradient(90deg, #1a1a1a, #222); border: 1px dashed var(--neon-yellow); border-radius: 15px; padding: 15px; margin: 20px 0; display: flex; align-items: center; gap: 15px; text-decoration: none; color: white; }
+        
+        /* --- DASHBOARD --- */
         .header { padding: 20px; display: flex; justify-content: space-between; align-items: center; background: rgba(0,0,0,0.5); border-bottom: 1px solid var(--glass-border); }
-        .tab-content { padding: 20px; animation: fadeIn 0.3s ease; }
+        .tab-content { padding: 20px; animation: fadeIn 0.3s ease; height: calc(100vh - 160px); overflow-y: auto; }
         .plan-card { background: var(--glass); border: 1px solid var(--glass-border); padding: 20px; border-radius: 15px; margin-bottom: 15px; display: flex; justify-content: space-between; align-items: center; }
+        .ad-banner { background: linear-gradient(90deg, #1a1a1a, #222); border: 1px dashed var(--neon-yellow); border-radius: 15px; padding: 15px; margin: 20px 0; display: flex; align-items: center; gap: 15px; text-decoration: none; color: white; font-size: 0.8rem; }
+
         .bottom-nav { position: fixed; bottom: 0; width: 100%; background: rgba(10,10,10,0.95); backdrop-filter: blur(15px); display: flex; justify-content: space-around; padding: 20px 0; border-top: 1px solid var(--glass-border); z-index: 100; }
-        .nav-item { color: #555; font-size: 1.3rem; cursor: pointer; transition: 0.3s; }
+        .nav-item { color: #555; font-size: 1.3rem; cursor: pointer; }
         .nav-item.active { color: var(--neon-yellow); }
+
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.05); } }
     </style>
 </head>
 <body>
 
     <div id="splash-screen" class="hidden">
         <div class="splash-logo">Hustensaft</div>
-        <div class="splash-welcome" id="splash-user-text">Willkommen zurück!</div>
+        <div id="splash-user-text">Elite Training</div>
     </div>
 
     <div id="auth-section" class="auth-container hidden">
-        <div class="logo-text">HUSTENSAFT</div>
+        <div style="font-size: 2rem; font-weight: 900; color: var(--neon-yellow); margin-bottom: 20px;">HUSTENSAFT</div>
         <div class="glass-card">
             <input type="email" id="email" placeholder="Email">
             <input type="password" id="password" placeholder="Passwort">
             <button class="btn-primary" onclick="signIn()">Einloggen</button>
-            <button class="btn-discord" onclick="signInWithDiscord()">
-                <i class="fab fa-discord"></i> Discord Login
-            </button>
             <p onclick="signUp()" style="text-align: center; font-size: 0.8rem; margin-top: 15px; color: #666; cursor: pointer;">Registrieren</p>
         </div>
     </div>
@@ -111,7 +82,7 @@
             <div id="plans-list-container"></div>
             <a href="https://hostvora.com" target="_blank" class="ad-banner">
                 <i class="fas fa-server"></i>
-                <div class="ad-text"><b>Hostvora.com</b><br><small>Code: HustensaftFitness5</small></div>
+                <div class="ad-text"><b>Hostvora.com</b><br>Code: HustensaftFitness5</div>
             </a>
         </div>
 
@@ -150,22 +121,14 @@
 
         window.onload = async () => {
             const { data: { session } } = await _supabase.auth.getSession();
-            
             if (session) {
                 currentUser = session.user;
-                const userName = currentUser.email.split('@')[0].toUpperCase();
-                
-                // Splash Screen zeigen
                 const splash = document.getElementById('splash-screen');
-                const splashText = document.getElementById('splash-user-text');
                 splash.classList.remove('hidden');
-                splashText.innerText = `Willkommen, ${userName}!`;
-
-                // Daten laden während Splash zeigt
-                document.getElementById('user-display').innerText = userName;
+                document.getElementById('splash-user-text').innerText = "Willkommen, " + currentUser.email.split('@')[0].toUpperCase();
+                
                 await loadData();
-
-                // Splash nach 2 Sekunden ausblenden
+                
                 setTimeout(() => {
                     splash.style.opacity = '0';
                     setTimeout(() => {
@@ -179,15 +142,40 @@
             }
         };
 
-        // --- Restliche Funktionen (identisch mit vorheriger Version) ---
         async function loadData() {
-            const { data } = await _supabase.from('user_data').select('*').eq('user_id', currentUser.id).single();
+            const { data, error } = await _supabase.from('user_data').select('*').eq('user_id', currentUser.id).single();
             if (data) {
                 userData = data;
                 document.getElementById('gym-badge').innerText = "GYM: " + (data.gym_name || '-');
                 document.getElementById('gym-input').value = data.gym_name || '';
                 renderPlans();
             }
+        }
+
+        async function saveToDatabase() {
+            const { error } = await _supabase.from('user_data').upsert({ 
+                user_id: currentUser.id, 
+                gym_name: userData.gym_name,
+                training_plans: userData.training_plans 
+            }, { onConflict: 'user_id' });
+            if(error) console.error("Save Error:", error);
+        }
+
+        async function updateGym() {
+            userData.gym_name = document.getElementById('gym-input').value;
+            await saveToDatabase();
+            document.getElementById('gym-badge').innerText = "GYM: " + userData.gym_name;
+            alert("Gym gespeichert!");
+        }
+
+        async function savePlan() {
+            const name = document.getElementById('new-plan-name').value;
+            const exercises = document.getElementById('new-plan-exercises').value;
+            if(!name) return alert("Name fehlt!");
+            userData.training_plans.push({ name, exercises });
+            await saveToDatabase();
+            renderPlans();
+            switchTab('training', document.querySelector('.nav-item'));
         }
 
         function renderPlans() {
@@ -206,10 +194,19 @@
         }
 
         async function signIn() {
-            const email = document.getElementById('email').value;
-            const password = document.getElementById('password').value;
-            const { error } = await _supabase.auth.signInWithPassword({ email, password });
+            const { error } = await _supabase.auth.signInWithPassword({
+                email: document.getElementById('email').value,
+                password: document.getElementById('password').value
+            });
             if (error) alert(error.message); else location.reload();
+        }
+
+        async function signUp() {
+            const { error } = await _supabase.auth.signUp({
+                email: document.getElementById('email').value,
+                password: document.getElementById('password').value
+            });
+            if (error) alert(error.message); else alert("Check deine Mails!");
         }
 
         async function signOut() { await _supabase.auth.signOut(); location.reload(); }
