@@ -2,48 +2,83 @@
 <html lang="de">
 <head>
     <meta charset="UTF-8">
-    <title>Hustensaft Fitness - App</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hustensaft App | Training</title>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
-        body { font-family: sans-serif; display: flex; justify-content: center; padding: 50px; }
-        .hidden { display: none; }
-        .card { border: 1px solid #ccc; padding: 20px; border-radius: 8px; width: 300px; }
-        input { width: 100%; margin: 10px 0; padding: 8px; }
-        button { width: 100%; padding: 10px; background: #28a745; color: white; border: none; cursor: pointer; }
+        :root { --yellow: #ffcc00; --black: #1a1a1a; }
+        body { font-family: sans-serif; background: var(--black); color: white; margin: 0; display: flex; justify-content: center; align-items: center; min-height: 100vh; }
+        .hidden { display: none !important; }
+        
+        /* Card Style */
+        .card { background: #222; border: 2px solid var(--yellow); padding: 30px; border-radius: 10px; width: 100%; max-width: 400px; text-align: center; }
+        h2 { color: var(--yellow); text-transform: uppercase; margin-bottom: 20px; }
+        
+        input { width: 90%; padding: 12px; margin: 10px 0; background: #333; border: 1px solid #444; color: white; border-radius: 5px; }
+        button { width: 100%; padding: 12px; margin-top: 10px; border: none; border-radius: 5px; font-weight: bold; cursor: pointer; text-transform: uppercase; }
+        .btn-main { background: var(--yellow); color: var(--black); }
+        .btn-sub { background: transparent; color: var(--yellow); border: 1px solid var(--yellow); }
+
+        /* App-Inhalt Styles */
+        #app-content { width: 90%; max-width: 600px; }
+        .workout-item { background: #333; padding: 15px; margin: 10px 0; border-left: 4px solid var(--yellow); text-align: left; }
     </style>
 </head>
 <body>
 
     <div id="auth-section" class="card">
-        <h2>Fitness Login</h2>
-        <input type="email" id="email" placeholder="E-Mail">
+        <h2>Member Login</h2>
+        <input type="email" id="email" placeholder="E-Mail Adresse">
         <input type="password" id="password" placeholder="Passwort">
-        <button onclick="signUp()">Registrieren</button>
-        <button onclick="signIn()" style="background:#007bff; margin-top:5px;">Einloggen</button>
+        <button class="btn-main" onclick="signIn()">Einloggen</button>
+        <button class="btn-sub" onclick="signUp()">Account erstellen</button>
     </div>
 
     <div id="app-content" class="hidden">
-        <h2>Willkommen beim Training!</h2>
-        <p>Hier sind deine Übungen für heute...</p>
-        <button onclick="signOut()" style="background:#dc3545;">Logout</button>
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+            <h2 style="margin: 0;">DEIN TRAINING</h2>
+            <button onclick="signOut()" style="width: auto; padding: 5px 15px;">Logout</button>
+        </div>
+        
+        <div class="workout-item">
+            <strong>Brust & Trizeps</strong>
+            <p>4 Sätze Bankdrücken, 3 Sätze Dips</p>
+        </div>
+        <div class="workout-item">
+            <strong>Rücken & Bizeps</strong>
+            <p>4 Sätze Klimmzüge, 3 Sätze Curls</p>
+        </div>
+        
+        <p style="text-align: center; color: var(--yellow);">Training wird synchronisiert...</p>
     </div>
 
     <script>
-        // Initialisiere Supabase (Daten von deinem Dashboard)
-        const _supabase = supabase.createClient('DEINE_SUPABASE_URL', 'DEIN_ANON_KEY');
+        // --- KONFIGURATION ---
+        // Ersetze diese Werte mit deinen Daten von Supabase.com
+        const SUPABASE_URL = 'DEINE_URL_HIER';
+        const SUPABASE_KEY = 'DEIN_ANON_KEY_HIER';
+        const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+        // Prüfen ob User bereits eingeloggt ist
+        window.onload = async () => {
+            const { data } = await _supabase.auth.getSession();
+            if (data.session) showApp();
+        };
 
         async function signUp() {
             const email = document.getElementById('email').value;
             const password = document.getElementById('password').value;
             const { error } = await _supabase.auth.signUp({ email, password });
-            if (error) alert(error.message); else alert("Check deine E-Mails zur Bestätigung!");
+            if (error) alert("Fehler: " + error.message);
+            else alert("Erfolg! Prüfe deine E-Mails zur Bestätigung.");
         }
 
         async function signIn() {
             const email = document.getElementById('email').value;
             const password = document.getElementById('password').value;
-            const { data, error } = await _supabase.auth.signInWithPassword({ email, password });
-            if (error) alert(error.message); else showApp();
+            const { error } = await _supabase.auth.signInWithPassword({ email, password });
+            if (error) alert("Login fehlgeschlagen: " + error.message);
+            else showApp();
         }
 
         function showApp() {
@@ -51,8 +86,8 @@
             document.getElementById('app-content').classList.remove('hidden');
         }
 
-        function signOut() {
-            _supabase.auth.signOut();
+        async function signOut() {
+            await _supabase.auth.signOut();
             location.reload();
         }
     </script>
