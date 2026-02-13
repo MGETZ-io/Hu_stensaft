@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <title>Hustensaft Fitness - App</title>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        body { font-family: sans-serif; display: flex; justify-content: center; padding: 50px; }
+        .hidden { display: none; }
+        .card { border: 1px solid #ccc; padding: 20px; border-radius: 8px; width: 300px; }
+        input { width: 100%; margin: 10px 0; padding: 8px; }
+        button { width: 100%; padding: 10px; background: #28a745; color: white; border: none; cursor: pointer; }
+    </style>
+</head>
+<body>
+
+    <div id="auth-section" class="card">
+        <h2>Fitness Login</h2>
+        <input type="email" id="email" placeholder="E-Mail">
+        <input type="password" id="password" placeholder="Passwort">
+        <button onclick="signUp()">Registrieren</button>
+        <button onclick="signIn()" style="background:#007bff; margin-top:5px;">Einloggen</button>
+    </div>
+
+    <div id="app-content" class="hidden">
+        <h2>Willkommen beim Training!</h2>
+        <p>Hier sind deine Übungen für heute...</p>
+        <button onclick="signOut()" style="background:#dc3545;">Logout</button>
+    </div>
+
+    <script>
+        // Initialisiere Supabase (Daten von deinem Dashboard)
+        const _supabase = supabase.createClient('DEINE_SUPABASE_URL', 'DEIN_ANON_KEY');
+
+        async function signUp() {
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const { error } = await _supabase.auth.signUp({ email, password });
+            if (error) alert(error.message); else alert("Check deine E-Mails zur Bestätigung!");
+        }
+
+        async function signIn() {
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const { data, error } = await _supabase.auth.signInWithPassword({ email, password });
+            if (error) alert(error.message); else showApp();
+        }
+
+        function showApp() {
+            document.getElementById('auth-section').classList.add('hidden');
+            document.getElementById('app-content').classList.remove('hidden');
+        }
+
+        function signOut() {
+            _supabase.auth.signOut();
+            location.reload();
+        }
+    </script>
+</body>
+</html>
