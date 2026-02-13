@@ -77,7 +77,6 @@
 
     <div id="register-view" class="auth-container hidden">
         <div class="logo-main">JOIN <span style="color: var(--neon-yellow);">ELITE</span></div>
-        <p style="color: #666; font-size: 0.7rem; margin-top: -10px; margin-bottom: 20px; letter-spacing: 2px;">POWERED BY TENCENT & GOOGLE LLC</p>
         <div class="glass-card">
             <input type="email" id="reg-email" placeholder="E-Mail">
             <input type="password" id="reg-password" placeholder="Passwort">
@@ -90,7 +89,7 @@
         <div class="upgrade-card">
             <i class="fas fa-crown" style="font-size: 2.5rem; color: var(--premium-gold); margin-bottom: 15px;"></i>
             <h3>PREMIUM FEATURE</h3>
-            <p style="font-size: 0.9rem; color: #888;">Schalte Spind-Speicher, Tracking & Ad-Free frei.</p>
+            <p style="font-size: 0.9rem; color: #888;">Schalte Spind-Speicher und Ad-Free frei.</p>
             <p style="color: white; font-weight: bold;">kontakt@hustensaft.org</p>
             <button class="btn-primary" style="margin-top: 15px;" onclick="closeUpgrade()">Schließen</button>
         </div>
@@ -117,16 +116,13 @@
                 <a href="https://hostvora.com" target="_blank" style="display: block; background: #111; border: 1px dashed var(--neon-yellow); padding: 15px; border-radius: 15px; text-decoration: none; color: white; margin-top: 20px;">
                     <b style="color: var(--neon-yellow);">Hostvora.com</b><br><small>Elite Hosting | Code: HustensaftFitness5</small>
                 </a>
-                <div style="text-align: center; margin-top: 10px;">
-                    <span style="color: var(--premium-gold); font-size: 0.75rem; text-decoration: underline; cursor: pointer;" onclick="openUpgrade()">Premium holen für Ad-Free</span>
-                </div>
             </div>
         </div>
 
         <div id="tab-add" class="tab-content hidden">
             <h3>Plan erstellen</h3>
             <div class="glass-card" style="max-width: 100%;">
-                <input type="text" id="new-plan-name" placeholder="Name (z.B. Chest Day)">
+                <input type="text" id="new-plan-name" placeholder="Name">
                 <textarea id="new-plan-exercises" placeholder="Übungen & Sätze..." rows="6"></textarea>
                 <button class="btn-primary" onclick="savePlan()">Speichern</button>
             </div>
@@ -134,13 +130,13 @@
 
         <div id="tab-settings" class="tab-content hidden">
             <h3>Account</h3>
-            <div class="glass-card" style="max-width: 100%; margin-bottom: 15px; border-color: var(--premium-gold);">
-                <p style="margin:0; font-size: 0.8rem; color: #888;">Besitzer: <b style="color: white;">Hustensaft Management</b></p>
-                <p style="margin:5px 0 0 0; font-size: 0.8rem; color: #888;">Status: <b id="status-text" style="color: white;">Starter</b></p>
-            </div>
             <div class="glass-card" style="max-width: 100%;">
-                <input type="text" id="gym-input" placeholder="Mein Gym">
-                <input type="text" id="locker-input" placeholder="Spindnummer (Premium)">
+                <label style="font-size: 0.7rem; color: #666; display: block; margin-bottom: 5px;">DEIN GYM</label>
+                <input type="text" id="gym-input" placeholder="Z.B. McFit">
+                
+                <label style="font-size: 0.7rem; color: #666; display: block; margin-bottom: 5px;">SPINDNUMMER (PREMIUM)</label>
+                <input type="text" id="locker-input" placeholder="Nummer">
+                
                 <button class="btn-primary" onclick="updateSettings()">Speichern</button>
                 <button class="btn-primary" style="background: #aa0000; color: white; margin-top: 20px;" onclick="signOut()">Abmelden</button>
             </div>
@@ -154,12 +150,13 @@
     </div>
 
     <script>
+        // Supabase Init
         const SUPABASE_URL = 'https://zalbnzbqtsncnjhjgiog.supabase.co';
         const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InphbGJuemJxdHNuY25qaGpnaW9nIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzEwMTU4MTksImV4cCI6MjA4NjU5MTgxOX0.L_n6P-cZD3tOtI2jlrJniYKhNTQpkt7MZUu1xMMbPYQ';
         const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-        // Die URL, zu der immer zurückgeleitet wird
-        const redirectUrl = window.location.origin + window.location.pathname;
+        // WICHTIG: Dynamische Redirect-URL
+        const currentPath = window.location.origin + window.location.pathname;
 
         let currentUser = null;
         let userData = { gym_name: '', training_plans: [], locker_number: '', account_tier: 'Starter' };
@@ -182,11 +179,14 @@
         };
 
         async function loadData() {
-            const { data } = await _supabase.from('user_data').select('*').eq('user_id', currentUser.id).single();
+            const { data, error } = await _supabase.from('user_data').select('*').eq('user_id', currentUser.id).single();
             if (data) {
                 userData = data;
                 applyUI();
                 renderPlans();
+            } else if (error) {
+                // Falls noch kein Eintrag existiert, lege einen leeren an
+                await _supabase.from('user_data').insert([{ user_id: currentUser.id, training_plans: [] }]);
             }
         }
 
@@ -195,15 +195,38 @@
             document.getElementById('user-display').innerText = currentUser.email.split('@')[0].toUpperCase();
             document.getElementById('tier-badge').innerText = userData.account_tier;
             document.getElementById('tier-badge').className = 'tier-badge ' + (isPremium ? 'tier-premium' : 'tier-starter');
-            document.getElementById('status-text').innerText = userData.account_tier;
             document.getElementById('gym-badge').innerText = "GYM: " + (userData.gym_name || '-');
             document.getElementById('locker-display').innerText = isPremium ? (userData.locker_number || 'N/A') : 'LOCKED';
+            
             if(isPremium) {
                 document.getElementById('locker-lock').classList.add('hidden');
-                document.getElementById('ad-section').classList.add('hidden');
             }
+
             document.getElementById('gym-input').value = userData.gym_name || '';
             document.getElementById('locker-input').value = userData.locker_number || '';
+        }
+
+        async function updateSettings() {
+            const gym = document.getElementById('gym-input').value;
+            const locker = document.getElementById('locker-input').value;
+            
+            // Sofort-Feedback im UI
+            userData.gym_name = gym;
+            userData.locker_number = locker;
+
+            const { error } = await _supabase.from('user_data').upsert({ 
+                user_id: currentUser.id, 
+                gym_name: gym, 
+                locker_number: locker,
+                training_plans: userData.training_plans 
+            });
+
+            if (error) {
+                alert("Fehler beim Speichern: " + error.message);
+            } else {
+                alert("Einstellungen wurden unter Hustensaft Management gespeichert!");
+                applyUI();
+            }
         }
 
         function switchTab(tab, el) {
@@ -225,15 +248,15 @@
             const { error } = await _supabase.auth.signUp({ 
                 email: document.getElementById('reg-email').value, 
                 password: document.getElementById('reg-password').value,
-                options: { emailRedirectTo: redirectUrl }
+                options: { emailRedirectTo: currentPath }
             });
-            if (error) alert(error.message); else alert("Check deine E-Mails zur Aktivierung!");
+            if (error) alert(error.message); else alert("Check deine Mails zur Aktivierung!");
         }
 
         async function signInWithDiscord() { 
             await _supabase.auth.signInWithOAuth({ 
                 provider: 'discord',
-                options: { redirectTo: redirectUrl }
+                options: { redirectTo: currentPath }
             }); 
         }
 
@@ -246,7 +269,7 @@
             document.getElementById('new-plan-name').value = '';
             document.getElementById('new-plan-exercises').value = '';
             renderPlans();
-            switchTab('training', document.querySelector('.nav-item'));
+            switchTab('training', document.querySelectorAll('.nav-item')[0]);
         }
 
         async function deletePlan(index) {
@@ -260,26 +283,15 @@
             const container = document.getElementById('plans-list-container');
             container.innerHTML = '';
             userData.training_plans.forEach((plan, i) => {
-                const isPremium = userData.account_tier === 'Premium';
                 container.innerHTML += `
                     <div class="plan-card">
                         <div><h4 style="margin:0;">${plan.name}</h4></div>
                         <div class="plan-actions">
                             <i class="fas fa-trash" style="color: #444; cursor:pointer;" onclick="deletePlan(${i})"></i>
-                            <i class="fas ${isPremium ? 'fa-play-circle' : 'fa-lock'}" 
-                               style="font-size: 2rem; color: ${isPremium ? 'var(--neon-yellow)' : '#444'};" 
-                               onclick="${isPremium ? 'alert(\'Live-Modus startet...\')' : 'openUpgrade()'}"></i>
+                            <i class="fas fa-play-circle" style="font-size: 2rem; color: var(--neon-yellow); cursor:pointer;"></i>
                         </div>
                     </div>`;
             });
-        }
-
-        async function updateSettings() {
-            userData.gym_name = document.getElementById('gym-input').value;
-            if(userData.account_tier === 'Premium') userData.locker_number = document.getElementById('locker-input').value;
-            await _supabase.from('user_data').upsert({ user_id: currentUser.id, gym_name: userData.gym_name, locker_number: userData.locker_number, training_plans: userData.training_plans });
-            alert("Daten gespeichert!");
-            loadData();
         }
 
         function openUpgrade() { document.getElementById('upgrade-modal').classList.remove('hidden'); }
