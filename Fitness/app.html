@@ -34,31 +34,30 @@
         .auth-container { height: 100vh; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 20px; }
         .glass-card { background: var(--glass); backdrop-filter: blur(15px); border: 1px solid var(--glass-border); border-radius: 20px; padding: 25px; width: 100%; box-sizing: border-box; }
         input, textarea { width: 100%; background: rgba(255,255,255,0.08); border: 1px solid transparent; padding: 14px; border-radius: 12px; color: white; margin-bottom: 12px; box-sizing: border-box; font-size: 16px; }
-        .btn-primary { width: 100%; background: var(--neon-yellow); color: black; border: none; padding: 15px; border-radius: 12px; font-weight: 800; text-transform: uppercase; cursor: pointer; }
         
-        /* --- ABO BADGES --- */
+        .btn-primary { width: 100%; background: var(--neon-yellow); color: black; border: none; padding: 15px; border-radius: 12px; font-weight: 800; text-transform: uppercase; cursor: pointer; }
+        .btn-discord { width: 100%; background: #5865F2; color: white; border: none; padding: 15px; border-radius: 12px; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px; margin-top: 10px; }
+
+        /* --- ABO & ADS --- */
         .tier-badge { font-size: 0.6rem; padding: 3px 8px; border-radius: 5px; font-weight: bold; text-transform: uppercase; margin-left: 10px; }
         .tier-starter { background: #444; color: #ccc; }
-        .tier-premium { background: var(--premium-gold); color: black; box-shadow: 0 0 10px rgba(255, 204, 0, 0.5); }
+        .tier-premium { background: var(--premium-gold); color: black; }
 
-        /* --- PREMIUM LOCK OVERLAY --- */
-        .lock-overlay { position: relative; overflow: hidden; }
-        .lock-icon { position: absolute; top: 10px; right: 10px; color: var(--premium-gold); font-size: 0.8rem; }
-        .blur-content { filter: blur(4px); pointer-events: none; }
+        .ad-banner { background: linear-gradient(90deg, #1a1a1a, #222); border: 1px dashed var(--neon-yellow); border-radius: 15px; padding: 15px; margin: 20px 0; display: flex; align-items: center; gap: 15px; text-decoration: none; color: white; font-size: 0.8rem; }
+        .premium-promo { text-align: center; font-size: 0.7rem; color: var(--premium-gold); margin-top: -10px; margin-bottom: 20px; cursor: pointer; text-decoration: underline; }
 
         /* --- DASHBOARD --- */
         .header { padding: 20px; display: flex; justify-content: space-between; align-items: center; background: rgba(0,0,0,0.5); border-bottom: 1px solid var(--glass-border); }
         .tab-content { padding: 20px; animation: fadeIn 0.3s ease; height: calc(100vh - 160px); overflow-y: auto; }
         .plan-card { background: var(--glass); border: 1px solid var(--glass-border); padding: 20px; border-radius: 15px; margin-bottom: 15px; display: flex; justify-content: space-between; align-items: center; }
+        
         .bottom-nav { position: fixed; bottom: 0; width: 100%; background: rgba(10,10,10,0.95); backdrop-filter: blur(15px); display: flex; justify-content: space-around; padding: 20px 0; border-top: 1px solid var(--glass-border); z-index: 100; }
         .nav-item { color: #555; font-size: 1.3rem; cursor: pointer; }
         .nav-item.active { color: var(--neon-yellow); }
 
-        /* --- UPGRADE MODAL --- */
         #upgrade-modal { position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 20000; display: flex; justify-content: center; align-items: center; padding: 20px; }
-        .upgrade-card { background: #111; border: 2px solid var(--premium-gold); border-radius: 20px; padding: 30px; text-align: center; }
+        .upgrade-card { background: #111; border: 2px solid var(--premium-gold); border-radius: 20px; padding: 30px; text-align: center; width: 100%; max-width: 300px; }
 
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
         @keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.05); } }
     </style>
 </head>
@@ -72,13 +71,13 @@
     <div id="upgrade-modal" class="hidden">
         <div class="upgrade-card">
             <i class="fas fa-crown" style="font-size: 3rem; color: var(--premium-gold); margin-bottom: 20px;"></i>
-            <h2 style="color: white;">PREMIUM FEATURE</h2>
-            <p style="color: #888;">Schalte Tracking, Spind-Speicher und alle Elite-Funktionen frei.</p>
-            <div style="background: rgba(255,204,0,0.1); padding: 15px; border-radius: 10px; margin: 20px 0;">
-                <p style="margin: 0; font-weight: bold; color: var(--premium-gold);">Upgrade per E-Mail:</p>
-                <p style="margin: 5px 0; font-size: 0.9rem;">hustensaft@management.com</p>
+            <h2 style="color: white; margin: 0;">PREMIUM</h2>
+            <p style="color: #888; font-size: 0.9rem; margin: 15px 0;">Tracke dein Training, nutze den Spind-Speicher und entferne die Werbung komplett.</p>
+            <div style="background: rgba(255,204,0,0.1); padding: 15px; border-radius: 10px; margin-bottom: 20px;">
+                <p style="margin: 0; font-weight: bold; color: var(--premium-gold);">Freischaltung unter:</p>
+                <p style="margin: 5px 0; font-size: 0.85rem; color: white;">kontakt@hustensaft.org</p>
             </div>
-            <button class="btn-primary" onclick="closeUpgrade()">Schließen</button>
+            <button class="btn-primary" onclick="closeUpgrade()">Zurück</button>
         </div>
     </div>
 
@@ -88,6 +87,11 @@
             <input type="email" id="email" placeholder="Email">
             <input type="password" id="password" placeholder="Passwort">
             <button class="btn-primary" onclick="signIn()">Einloggen</button>
+            
+            <button class="btn-discord" onclick="signInWithDiscord()">
+                <i class="fab fa-discord"></i> Discord Login
+            </button>
+
             <p onclick="signUp()" style="text-align: center; font-size: 0.8rem; margin-top: 15px; color: #666; cursor: pointer;">Registrieren</p>
         </div>
     </div>
@@ -102,19 +106,22 @@
         </div>
 
         <div id="tab-training" class="tab-content">
-            <div id="locker-container" class="locker-info" onclick="checkPremium()">
+            <div id="locker-container" style="background: #222; color: white; padding: 10px; border-radius: 10px; margin-bottom: 20px; font-weight: 800; display: flex; justify-content: space-between; align-items: center;" onclick="checkPremium()">
                 <span><i class="fas fa-key"></i> SPIND:</span>
-                <span id="locker-display">N/A</span>
-                <i class="fas fa-lock lock-icon" id="locker-lock"></i>
+                <span id="locker-display">LOCKED</span>
+                <i class="fas fa-lock" id="locker-lock" style="color: var(--premium-gold); font-size: 0.8rem;"></i>
             </div>
 
             <h3 style="margin-top: 0;">Trainingspläne</h3>
             <div id="plans-list-container"></div>
             
-            <a href="https://hostvora.com" target="_blank" style="background: linear-gradient(90deg, #1a1a1a, #222); border: 1px dashed var(--neon-yellow); border-radius: 15px; padding: 15px; margin: 20px 0; display: flex; align-items: center; gap: 15px; text-decoration: none; color: white; font-size: 0.8rem;">
-                <i class="fas fa-server" style="color: var(--neon-yellow);"></i>
-                <div><b>Hostvora.com</b><br>Code: HustensaftFitness5</div>
-            </a>
+            <div id="ad-section">
+                <a href="https://hostvora.com" target="_blank" class="ad-banner">
+                    <i class="fas fa-server" style="color: var(--neon-yellow);"></i>
+                    <div><b>Hostvora.com</b><br>Code: HustensaftFitness5</div>
+                </a>
+                <div class="premium-promo" onclick="openUpgrade()">Premium holen für Ad-Free</div>
+            </div>
         </div>
 
         <div id="tab-add" class="tab-content hidden">
@@ -127,14 +134,14 @@
         </div>
 
         <div id="tab-settings" class="tab-content hidden">
-            <h3>Account & Abo</h3>
-            <div class="glass-card" style="max-width: 100%; margin-bottom: 15px;">
-                <p style="margin-top:0; color:#888;">Aktueller Status: <b id="status-text" style="color:white;">Starter</b></p>
-                <button class="btn-primary" style="background: var(--premium-gold);" onclick="openUpgrade()">Upgrade anfragen</button>
+            <h3>Account</h3>
+            <div class="glass-card" style="max-width: 100%; margin-bottom: 15px; border-color: var(--premium-gold);">
+                <p style="margin:0; color:#888; font-size: 0.8rem;">Status: <b id="status-text" style="color:white;">Starter</b></p>
+                <button class="btn-primary" style="background: var(--premium-gold); margin-top: 10px; padding: 10px;" onclick="openUpgrade()">Upgrade Info</button>
             </div>
             <div class="glass-card" style="max-width: 100%;">
-                <input type="text" id="gym-input" placeholder="Dein Gym">
-                <input type="text" id="locker-input" placeholder="Spindnummer (Premium)">
+                <input type="text" id="gym-input" placeholder="Gym">
+                <input type="text" id="locker-input" placeholder="Spind (Premium Only)">
                 <button class="btn-primary" onclick="updateSettings()">Speichern</button>
                 <button class="btn-primary" style="background: #aa0000; color: white; margin-top: 20px;" onclick="signOut()">Logout</button>
             </div>
@@ -147,11 +154,11 @@
         </div>
     </div>
 
-    <div id="live-tracker" class="hidden">
+    <div id="live-tracker" class="hidden" style="position: fixed; inset: 0; background: var(--deep-black); z-index: 10000; padding: 40px 20px; text-align: center;">
         <h2 id="live-title" style="color: var(--neon-yellow);">TRAINING</h2>
         <div id="timer-display" style="font-size: 4rem; font-weight: 900; color: var(--neon-yellow); margin: 20px 0;">01:00</div>
-        <p id="live-exercises" style="white-space: pre-wrap; padding: 20px;"></p>
-        <button class="btn-primary" onclick="stopLiveMode()">Beenden</button>
+        <p id="live-exercises" style="white-space: pre-wrap; padding: 20px; color: #ccc;"></p>
+        <button class="btn-primary" onclick="document.getElementById('live-tracker').classList.add('hidden')">Beenden</button>
     </div>
 
     <script>
@@ -167,7 +174,6 @@
             if (session) {
                 currentUser = session.user;
                 document.getElementById('splash-screen').classList.remove('hidden');
-                document.getElementById('splash-user-text').innerText = "ELITE ACCESS GRANTED";
                 await loadData();
                 setTimeout(() => {
                     document.getElementById('splash-screen').style.opacity = '0';
@@ -185,54 +191,47 @@
             const { data } = await _supabase.from('user_data').select('*').eq('user_id', currentUser.id).single();
             if (data) {
                 userData = data;
-                applyTierLock();
-                document.getElementById('user-display').innerText = currentUser.email.split('@')[0].toUpperCase();
-                document.getElementById('gym-badge').innerText = "GYM: " + (data.gym_name || '-');
-                document.getElementById('locker-display').innerText = userData.account_tier === 'Premium' ? (data.locker_number || 'N/A') : 'LOCKED';
-                document.getElementById('gym-input').value = data.gym_name || '';
-                document.getElementById('locker-input').value = data.locker_number || '';
+                applyUIUpdates();
                 renderPlans();
             }
         }
 
-        function applyTierLock() {
-            const badge = document.getElementById('tier-badge');
-            const statusText = document.getElementById('status-text');
-            badge.innerText = userData.account_tier;
-            statusText.innerText = userData.account_tier;
+        function applyUIUpdates() {
+            const isPremium = userData.account_tier === 'Premium';
+            document.getElementById('user-display').innerText = currentUser.email.split('@')[0].toUpperCase();
+            document.getElementById('tier-badge').innerText = userData.account_tier;
+            document.getElementById('tier-badge').className = 'tier-badge ' + (isPremium ? 'tier-premium' : 'tier-starter');
+            document.getElementById('status-text').innerText = userData.account_tier;
+            document.getElementById('gym-badge').innerText = "GYM: " + (userData.gym_name || '-');
             
-            if(userData.account_tier === 'Premium') {
-                badge.className = 'tier-badge tier-premium';
-                document.getElementById('locker-lock').classList.add('hidden');
-                document.getElementById('locker-container').style.background = 'var(--neon-yellow)';
-            } else {
-                badge.className = 'tier-badge tier-starter';
-                document.getElementById('locker-container').style.background = '#222';
-            }
+            // Locker Logic
+            document.getElementById('locker-display').innerText = isPremium ? (userData.locker_number || 'N/A') : 'LOCKED';
+            document.getElementById('locker-container').style.background = isPremium ? 'var(--neon-yellow)' : '#222';
+            document.getElementById('locker-container').style.color = isPremium ? 'black' : 'white';
+            if(isPremium) document.getElementById('locker-lock').classList.add('hidden');
+
+            // Ad Logic
+            if(isPremium) document.getElementById('ad-section').classList.add('hidden');
+            else document.getElementById('ad-section').classList.remove('hidden');
+
+            document.getElementById('gym-input').value = userData.gym_name || '';
+            document.getElementById('locker-input').value = userData.locker_number || '';
+        }
+
+        async function signInWithDiscord() {
+            await _supabase.auth.signInWithOAuth({ provider: 'discord', options: { redirectTo: window.location.origin + window.location.pathname } });
         }
 
         function openUpgrade() { document.getElementById('upgrade-modal').classList.remove('hidden'); }
         function closeUpgrade() { document.getElementById('upgrade-modal').classList.add('hidden'); }
-
-        function checkPremium() {
-            if(userData.account_tier !== 'Premium') openUpgrade();
-        }
+        function checkPremium() { if(userData.account_tier !== 'Premium') openUpgrade(); }
 
         async function updateSettings() {
             userData.gym_name = document.getElementById('gym-input').value;
-            if(userData.account_tier === 'Premium') {
-                userData.locker_number = document.getElementById('locker-input').value;
-            } else if(document.getElementById('locker-input').value !== '') {
-                return openUpgrade();
-            }
-            await _supabase.from('user_data').upsert({ 
-                user_id: currentUser.id, 
-                gym_name: userData.gym_name,
-                locker_number: userData.locker_number,
-                training_plans: userData.training_plans 
-            });
+            if(userData.account_tier === 'Premium') userData.locker_number = document.getElementById('locker-input').value;
+            await _supabase.from('user_data').upsert({ user_id: currentUser.id, gym_name: userData.gym_name, locker_number: userData.locker_number, training_plans: userData.training_plans });
             loadData();
-            alert("Gespeichert!");
+            alert("Erfolgreich gespeichert!");
         }
 
         async function savePlan() {
@@ -248,12 +247,13 @@
             const container = document.getElementById('plans-list-container');
             container.innerHTML = '';
             userData.training_plans.forEach((plan, i) => {
+                const isPremium = userData.account_tier === 'Premium';
                 container.innerHTML += `
                     <div class="plan-card">
                         <div><h4>${plan.name}</h4></div>
-                        <i class="fas ${userData.account_tier === 'Premium' ? 'fa-play-circle' : 'fa-lock'}" 
-                           style="font-size: 2rem; color: ${userData.account_tier === 'Premium' ? 'var(--neon-yellow)' : '#444'};" 
-                           onclick="${userData.account_tier === 'Premium' ? `startLive(${i})` : 'openUpgrade()'}"></i>
+                        <i class="fas ${isPremium ? 'fa-play-circle' : 'fa-lock'}" 
+                           style="font-size: 2rem; color: ${isPremium ? 'var(--neon-yellow)' : '#444'};" 
+                           onclick="${isPremium ? `startLive(${i})` : 'openUpgrade()'}"></i>
                     </div>`;
             });
         }
@@ -265,8 +265,6 @@
             document.getElementById('live-tracker').classList.remove('hidden');
         }
 
-        function stopLiveMode() { document.getElementById('live-tracker').classList.add('hidden'); }
-
         function switchTab(tabName, el) {
             document.querySelectorAll('.tab-content').forEach(t => t.classList.add('hidden'));
             document.getElementById('tab-' + tabName).classList.remove('hidden');
@@ -277,6 +275,11 @@
         async function signIn() {
             const { error } = await _supabase.auth.signInWithPassword({ email: document.getElementById('email').value, password: document.getElementById('password').value });
             if (error) alert(error.message); else location.reload();
+        }
+
+        async function signUp() {
+            const { error } = await _supabase.auth.signUp({ email: document.getElementById('email').value, password: document.getElementById('password').value });
+            if (error) alert(error.message); else alert("Check deine Mails!");
         }
 
         async function signOut() { await _supabase.auth.signOut(); location.reload(); }
