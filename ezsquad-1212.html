@@ -3,28 +3,29 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Empfohlen vom EZ Sqaud | Hustensaft</title>
-<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+<title>Empfohlen von [CREATOR NAME]</title>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
 <style>
     body {
-        font-family: 'Roboto', sans-serif;
         margin: 0;
         padding: 0;
-        background: #f5f5f5;
-        color: #333;
+        font-family: 'Roboto', sans-serif;
+        background-color: #000;
+        color: #fff;
         display: flex;
         flex-direction: column;
         min-height: 100vh;
     }
     header {
-        background-color: #ff6600;
-        color: white;
-        padding: 3rem 1rem;
+        background-color: #FFD500; /* Gelb */
+        color: #000;
         text-align: center;
+        padding: 3rem 1rem;
     }
     header h1 {
+        font-family: 'Anton', sans-serif;
+        font-size: 3rem;
         margin: 0.5rem 0;
-        font-size: 2rem;
     }
     header p {
         font-size: 1.2rem;
@@ -38,51 +39,57 @@
     }
     .cta-button {
         display: inline-block;
-        margin: 1.5rem 0;
-        background-color: #ff6600;
-        color: white;
+        margin: 2rem 0;
+        background-color: #FFD500;
+        color: #000;
         text-decoration: none;
-        padding: 1rem 2rem;
-        border-radius: 6px;
+        padding: 1rem 2.5rem;
+        border-radius: 8px;
         font-weight: bold;
-        transition: background 0.2s;
+        font-size: 1.2rem;
+        transition: transform 0.2s, background 0.2s;
     }
     .cta-button:hover {
-        background-color: #e65c00;
+        transform: scale(1.05);
+        background-color: #FFC400;
     }
     .creator-info {
         font-size: 1rem;
         margin-top: 1rem;
-        color: #555;
+        color: #ccc;
     }
     footer {
         text-align: center;
         padding: 2rem 1rem;
         font-size: 0.9rem;
-        color: #666;
-        background: #fafafa;
+        color: #888;
+        background: #111;
     }
     footer a {
-        color: #ff6600;
+        color: #FFD500;
         text-decoration: none;
+        font-weight: bold;
+    }
+    .highlight {
+        color: #FFD500;
         font-weight: bold;
     }
 </style>
 </head>
 <body>
 <header>
-    <h1>Empfohlen vom EZ SQUAD</h1>
-    <p>Dieser Content Creator empfiehlt unsere Services – vertrau auf seine Empfehlung!</p>
+    <h1>Empfohlen von [CREATOR NAME]</h1>
+    <p>Weil nur die besten Streams gut genug sind 🔥</p>
 </header>
 <main>
-    <p>Entdecke die besten Tools, Services und Angebote, die dir als Creator helfen, besser zu werden.</p>
-    <a href="/" class="cta-button" target="_blank">Jetzt starten</a>
+    <p>Bock auf richtig geile Streams und Content? Dann folg dem Tipp von <span class="highlight">[CREATOR NAME]</span> und check das aus!</p>
+    <a href="[DESTINATION_LINK]" class="cta-button" target="_blank">Jetzt reingehen</a>
     <div class="creator-info">
-        Empfohlen vom EZ SQUAD – Infos über uns auf <a href="https://hustensaft.org" target="_blank">Hustensaft.org</a>
+        Empfohlen von <span class="highlight">[CREATOR NAME]</span> – mehr coole Sachen gibt’s auf <a href="https://hustensaft.org" target="_blank">Hustensaft.org</a>
     </div>
 </main>
 <footer>
-    &copy; 2026 Hustensaft.org – Alle Rechte vorbehalten
+    &copy; 2026 Hustensaft.org – Für Creator, von Creators
 </footer>
 </body>
 </html>
