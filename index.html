@@ -3,258 +3,127 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hustensaft Jugend | Official</title>
+    <title>Wartungsarbeiten | Hustensaft Jugend</title>
     <style>
         :root {
             --accent-yellow: #FFD700;
             --bg-dark: #0f0f0f;
-            --card-bg: #1a1a1a;
             --text-main: #ffffff;
-            --transition: 0.3s ease;
-            --twitch-purple: #9146FF;
-            --yt-red: #FF0000;
+            --text-dim: #bbbbbb;
         }
 
         body {
-            font-family: 'Inter', 'Segoe UI', sans-serif;
+            font-family: 'Inter', 'Segoe UI', Arial, sans-serif;
             background-color: var(--bg-dark);
             color: var(--text-main);
             margin: 0;
             display: flex;
             flex-direction: column;
+            justify-content: center;
             align-items: center;
-            min-height: 100vh;
-        }
-
-        .header {
+            height: 100vh;
             text-align: center;
-            padding: 40px 20px;
         }
 
-        .header h1 {
-            font-size: 2.5rem;
-            text-transform: uppercase;
-            letter-spacing: 4px;
-            color: var(--accent-yellow);
-            margin: 0;
-            text-shadow: 3px 3px 0px rgba(255, 215, 0, 0.2);
-        }
-
-        .header p {
-            color: #888;
-            margin-top: 10px;
-            font-weight: 300;
-        }
-
-        /* Main Grid Layout */
-        .content-grid {
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: 30px;
-            width: 95%;
-            max-width: 1100px;
+        /* Container Positionierung wie bei Google Search */
+        .main-content {
+            margin-top: -50px; /* Leichter Versatz nach oben für die optische Mitte */
             padding: 20px;
         }
 
-        @media (min-width: 900px) {
-            .content-grid {
-                grid-template-columns: 350px 1fr;
-            }
-        }
-
-        /* Links Section */
-        .links-container {
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-        }
-
-        .link-card {
-            background: var(--card-bg);
-            border: 1px solid #333;
-            padding: 18px;
-            text-align: center;
-            text-decoration: none;
-            color: var(--text-main);
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            border-radius: 8px;
-            transition: var(--transition);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .link-card:hover {
-            background: var(--accent-yellow);
-            color: var(--bg-dark);
-            transform: translateY(-3px);
-            box-shadow: 0 10px 20px rgba(255, 215, 0, 0.15);
-        }
-
-        .link-card.twitch { border-left: 5px solid var(--twitch-purple); }
-        .link-card.youtube { border-left: 5px solid var(--yt-red); }
-        .link-card.discord { border-left: 5px solid #5865F2; }
-
-        /* Media Section */
-        .media-container {
-            display: flex;
-            flex-direction: column;
-            gap: 25px;
-        }
-
-        .video-wrapper {
+        /* Coole Animation */
+        .loader {
+            width: 80px;
+            height: 80px;
+            border: 4px solid transparent;
+            border-top: 4px solid var(--accent-yellow);
+            border-radius: 50%;
+            margin: 0 auto 30px;
+            animation: spin 1s cubic-bezier(0.68, -0.55, 0.27, 1.55) infinite;
             position: relative;
-            padding-bottom: 56.25%; /* 16:9 ratio */
-            height: 0;
-            background: #000;
-            border-radius: 12px;
-            overflow: hidden;
-            border: 1px solid #333;
         }
 
-        .video-wrapper iframe {
+        .loader::after {
+            content: '';
             position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
+            top: 5px; left: 5px; right: 5px; bottom: 5px;
+            border: 4px solid transparent;
+            border-bottom: 4px solid var(--accent-yellow);
+            border-radius: 50%;
+            opacity: 0.5;
+            animation: spin 2s linear infinite reverse;
         }
 
-        .section-title {
-            font-size: 0.9rem;
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        h1 {
+            font-size: 2rem;
             text-transform: uppercase;
+            letter-spacing: 4px;
+            margin: 0;
             color: var(--accent-yellow);
-            margin-bottom: 12px;
-            letter-spacing: 2px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
         }
 
-        .badge {
-            font-size: 0.7rem;
-            background: var(--accent-yellow);
-            color: black;
-            padding: 2px 6px;
-            margin-left: 10px;
-            border-radius: 2px;
+        p {
+            color: var(--text-dim);
+            font-size: 1.1rem;
+            margin-top: 15px;
+            max-width: 500px;
+            line-height: 1.5;
+        }
+
+        .brand {
             font-weight: bold;
+            letter-spacing: 1px;
         }
 
-        .badge.live {
-            background: #ff0000;
-            color: white;
-            animation: pulse 1.5s infinite;
-        }
-
-        @keyframes pulse {
-            0% { opacity: 1; }
-            50% { opacity: 0.6; }
-            100% { opacity: 1; }
-        }
-
-        footer {
-            margin-top: auto;
-            padding: 40px;
+        /* Dezentere Unterinfo */
+        .status-tag {
+            margin-top: 40px;
+            font-family: 'Courier New', monospace;
             font-size: 0.8rem;
-            color: #444;
-            text-align: center;
+            color: #333;
+            text-transform: uppercase;
         }
 
-        .impressum-link {
-            margin-top: 20px;
-            font-size: 0.75rem;
-            color: #666;
+        /* Google-Style Link (dezent) */
+        .footer-links {
+            position: absolute;
+            bottom: 30px;
+            font-size: 0.85rem;
+        }
+
+        .footer-links a {
+            color: var(--text-dim);
             text-decoration: none;
-            display: block;
-            text-align: center;
-            transition: var(--transition);
+            margin: 0 15px;
+            transition: color 0.2s;
         }
 
-        .impressum-link:hover {
+        .footer-links a:hover {
             color: var(--accent-yellow);
         }
     </style>
 </head>
 <body>
 
-    <header class="header">
-        <h1>HUSTENSAFT JUGEND</h1>
-        <p>Minecraft • Streaming • Community</p>
-    </header>
+<div class="main-content">
+    <div class="loader"></div>
+    <h1>Wartungsarbeiten</h1>
+    <p>Wir optimieren gerade die <span class="brand">Hustensaft Jugend</span> Projekte.<br>
+       Schau in Kürze wieder vorbei.</p>
+    
+    <div class="status-tag">System-Status: Updating_Core...</div>
+</div>
 
-    <div class="content-grid">
-        <aside class="links-container">
-            <div class="section-title">Socials & Mehr</div>
-            
-            <a href="https://twitch.tv/hu_stensaft" target="_blank" class="link-card twitch">
-                Twitch <span class="badge live">LIVE</span>
-            </a>
-
-            <a href="https://youtube.com/@hu_stensaft" target="_blank" class="link-card youtube">
-                Youtube <span class="badge live">LIVE</span>
-            </a>
-
-            <a href="https://discord.gg/y8hgebrq84" target="_blank" class="link-card discord">
-                Discord Server
-            </a>
-
-            <a href="https://team.hustensaft.org" target="_blank" class="link-card discord">
-                Das Team
-            </a>
-
-            <a href="/jobs" class="link-card">
-                Team Bewerbung
-            </a>
-
-            <a href="impressum.html" class="impressum-link">
-                Rechtliches & Impressum
-            </a>
-        </aside>
-
-        <main class="media-container">
-            
-            <section>
-                <div class="section-title">🎥 Aktueller Stream</div>
-                <div class="video-wrapper">
-                    <iframe 
-                        src="https://player.twitch.tv/?channel=hu_stensaft&parent=hustensaft.org" 
-                        frameborder="0" 
-                        allowfullscreen="true" 
-                        scrolling="no">
-                    </iframe>
-                </div>
-            </section>
-
-            <section>
-                <div class="section-title">📺 Neueste Uploads</div>
-                <div class="video-wrapper">
-                    <iframe 
-                        src="https://www.youtube.com/embed?listType=playlist&list=UU6KREO_U6D_H6pGfG9G9X_A" 
-                        frameborder="0" 
-                        allowfullscreen>
-                    </iframe>
-                </div>
-            </section>
-
-        </main>
-    </div>
-
-    <footer>
-        &copy; 2026 HUSTENSAFT JUGENDPROJEKT VEREINIGUNG<br>
-        <small>hustensaft.org</small>
-    </footer>
+<div class="footer-links">
+    <a href="/impressum">Impressum</a>
+    <a href="https://discord.gg/deinlink">Discord</a>
+    <a href="https://twitch.tv/deinkanal">Twitch</a>
+</div>
 
 </body>
 </html>
-<!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-TK0MMRWX31"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-
-  gtag('config', 'G-TK0MMRWX31');
-</script>
