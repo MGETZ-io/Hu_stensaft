@@ -1,5 +1,22 @@
 {
-  "next_version": "B1 26",
-  "release_date": "2026-12-31",
-  "status": "In Entwicklung"
+  "next_version": "B1 27",
+  "release_date": "15. April 2026",
+  "status": "In Entwicklung",
+  "brands": [
+    {
+      "name": "Beneventi",
+      "type": "Luxury Racing Bus",
+      "desc": "High-End Aerodynamik"
+    },
+    {
+      "name": "NOM Truck",
+      "type": "Heavy Duty",
+      "desc": "Maximale Power"
+    },
+    {
+      "name": "V-Streamer",
+      "type": "High Speed",
+      "desc": "Kurven-Spezialist"
+    }
+  ]
 }
