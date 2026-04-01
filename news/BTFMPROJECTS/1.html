@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WICHTIGES UPDATE</title>
+    <style>
+        body {
+            background-color: #1a1a1a;
+            color: white;
+            font-family: 'Arial Black', Gadget, sans-serif;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            text-align: center;
+        }
+
+        #loading-section {
+            display: block;
+        }
+
+        #prank-section {
+            display: none;
+            animation: shake 0.5s infinite;
+        }
+
+        .loader {
+            border: 8px solid #333;
+            border-top: 8px solid #ff0000;
+            border-radius: 50%;
+            width: 60px;
+            height: 60px;
+            animation: spin 1s linear infinite;
+            margin: 20px auto;
+        }
+
+        h1 { font-size: 3rem; color: #ffcc00; }
+        .huge-text { font-size: 5rem; color: #ff0000; text-transform: uppercase; }
+
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        
+        @keyframes shake {
+            0% { transform: translate(1px, 1px) rotate(0deg); }
+            10% { transform: translate(-1px, -2px) rotate(-1deg); }
+            30% { transform: translate(3px, 2px) rotate(0deg); }
+            50% { transform: translate(-1px, 2px) rotate(1deg); }
+            70% { transform: translate(3px, 1px) rotate(-1deg); }
+            100% { transform: translate(1px, -2px) rotate(0deg); }
+        }
+    </style>
+</head>
+<body>
+
+    <div id="loading-section">
+        <h1>Sicherheits-Check läuft...</h1>
+        <div class="loader"></div>
+        <p>Bitte warten, Daten von Lucas & Baruko werden verarbeitet.</p>
+    </div>
+
+    <div id="prank-section">
+        <h1 class="huge-text">APRIL APRIL!</h1>
+        <h1 class="huge-text">IHR WURDET VERARSCHT!</h1>
+        <p style="font-size: 1.5rem;">Schöne Grüße von Max & Niklas (euer April April TEAM) 🤡</p>
+    </div>
+
+    <script>
+        // Nach 3 Sekunden wird der Prank eingeblendet
+        setTimeout(function() {
+            document.getElementById('loading-section').style.display = 'none';
+            document.getElementById('prank-section').style.display = 'block';
+            document.body.style.backgroundColor = "#ffcc00"; // Hintergrund wechselt auf Gelb
+            document.querySelector('#prank-section').style.color = "black";
+        }, 3000);
+    </script>
+
+</body>
+</html>
