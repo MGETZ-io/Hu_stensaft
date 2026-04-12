@@ -3,225 +3,258 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BigTimeFM - Web App</title>
+    <title>BigTimeFM Player</title>
     <style>
         :root {
-            --glass-bg: rgba(255, 255, 255, 0.1);
-            --glass-border: rgba(255, 255, 255, 0.2);
-            --accent-blue: #007aff;
+            --accent: #ff8c00;
+            --bg: #000;
+            --glass: rgba(15, 15, 15, 0.85);
+            --border: rgba(255, 140, 0, 0.4);
         }
 
         body, html {
-            margin: 0;
-            padding: 0;
-            height: 100%;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
-            color: white;
-            overflow: hidden;
-            display: flex;
-            justify-content: center;
-            align-items: center;
+            margin: 0; padding: 0; height: 100%;
+            font-family: 'Segoe UI', Roboto, sans-serif;
+            color: white; overflow: hidden;
+            background: #000;
         }
 
-        /* Liquid Glass Container */
-        .app-container {
-            width: 90vw;
-            max-width: 1000px;
-            height: 80vh;
-            background: var(--glass-bg);
-            backdrop-filter: blur(20px) saturate(180%);
-            -webkit-backdrop-filter: blur(20px) saturate(180%);
-            border: 1px solid var(--glass-border);
-            border-radius: 40px;
-            display: grid;
-            grid-template-columns: 300px 1fr;
-            box-shadow: 0 25px 50px rgba(0,0,0,0.5);
-            overflow: hidden;
+        body::before {
+            content: "";
+            position: fixed; inset: 0;
+            background: url('bg.png') center/cover no-repeat;
+            filter: blur(1px) brightness(0.4);
+            z-index: -1;
         }
 
-        /* Sidebar / Navigation */
-        .sidebar {
-            background: rgba(0, 0, 0, 0.2);
-            padding: 30px;
-            border-right: 1px solid var(--glass-border);
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
+        /* Auswahl-Menü */
+        #selector {
+            position: fixed; inset: 0; background: #000; z-index: 2000;
+            display: flex; gap: 30px; align-items: center; justify-content: center;
         }
 
-        .nav-item {
-            padding: 15px 20px;
-            border-radius: 15px;
-            cursor: pointer;
-            transition: background 0.3s;
-            font-weight: 600;
-            display: flex;
-            align-items: center;
-            gap: 10px;
+        .select-card {
+            width: 250px; height: 300px; background: #111; border: 2px solid #333;
+            border-radius: 30px; display: flex; flex-direction: column; 
+            align-items: center; justify-content: center; cursor: pointer; transition: 0.3s;
         }
 
-        .nav-item:hover { background: var(--glass-bg); }
-        .nav-item.active { background: var(--accent-blue); }
+        .select-card:hover { border-color: var(--accent); transform: scale(1.05); }
 
-        /* Main Content */
-        .main-content {
-            padding: 40px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: space-between;
-            text-align: center;
+        /* Player Layout */
+        #player-interface {
+            display: none; height: 100vh; flex-direction: column; padding: 30px; box-sizing: border-box;
         }
 
-        .cover-art {
-            width: 250px;
-            height: 250px;
-            border-radius: 30px;
-            background: #222;
-            box-shadow: 0 15px 35px rgba(0,0,0,0.4);
-            object-fit: cover;
-            transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        .grid-container {
+            display: grid; grid-template-columns: 400px 1fr; gap: 30px;
+            height: calc(100vh - 180px); max-width: 1400px; margin: 0 auto; width: 100%;
         }
 
-        .cover-art.playing { transform: scale(1.05); }
-
-        .now-playing { margin: 20px 0; }
-        .song-title { font-size: 1.8rem; font-weight: bold; margin-bottom: 5px; }
-        .artist-name { font-size: 1.2rem; opacity: 0.7; }
-
-        /* Player Controls */
-        .controls {
-            display: flex;
-            align-items: center;
-            gap: 30px;
+        .card {
+            background: var(--glass); border: 2px solid var(--border);
+            border-radius: 35px; overflow: hidden; display: flex; flex-direction: column;
         }
 
-        .play-btn {
-            width: 80px;
-            height: 80px;
-            border-radius: 50%;
-            background: white;
-            border: none;
-            cursor: pointer;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            transition: transform 0.2s;
+        .cover-card { align-items: center; justify-content: center; padding: 30px; }
+
+        .player-cover {
+            width: 100%; aspect-ratio: 1/1; border-radius: 20px; object-fit: cover;
+            border: 1px solid var(--border);
         }
 
-        .play-btn:active { transform: scale(0.9); }
-        .play-btn svg { width: 40px; height: 40px; fill: black; }
+        .tracklist-card { padding: 25px; }
+        .track-scroll { overflow-y: auto; flex: 1; }
 
-        .status-badge {
-            font-size: 0.8rem;
-            padding: 5px 12px;
-            border-radius: 20px;
-            background: rgba(0, 255, 0, 0.2);
-            color: #00ff00;
-            border: 1px solid rgba(0, 255, 0, 0.3);
+        .track-item {
+            display: flex; align-items: center; padding: 12px;
+            border-bottom: 1px solid rgba(255,140,0,0.1); gap: 15px;
         }
+
+        /* Iframe Styling */
+        #junior-frame {
+            width: 100%; height: 100%; border: none; background: transparent;
+        }
+
+        .player-bar {
+            position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%);
+            width: calc(100% - 60px); max-width: 1400px; height: 100px;
+            background: var(--glass); border: 2px solid var(--border);
+            border-radius: 30px; display: flex; align-items: center; padding: 0 40px; gap: 30px;
+        }
+
+        .song-info { flex: 1; min-width: 0; }
+        .song-title { font-size: 1.4rem; font-weight: bold; margin: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .dj-name { color: var(--accent); font-size: 1rem; }
+
+        .play-btn { width: 60px; height: 60px; border-radius: 50%; background: var(--accent); border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+        .vol-box { display: flex; align-items: center; gap: 10px; width: 200px; }
+        input[type=range] { flex: 1; accent-color: var(--accent); cursor: pointer; }
+
+        .btn-back { position: absolute; top: 30px; right: 30px; background: transparent; border: 1px solid var(--accent); color: var(--accent); padding: 8px 15px; border-radius: 10px; cursor: pointer; z-index: 100; }
+        
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-thumb { background: var(--accent); border-radius: 10px; }
     </style>
 </head>
 <body>
 
-<div class="app-container">
-    <div class="sidebar">
-        <h2 style="margin-bottom: 30px;">BigTimeFM</h2>
-        <div class="nav-item active" onclick="switchStream('main')">Main Stream</div>
-        <div class="nav-item" onclick="switchStream('junior')">Junior Stream</div>
-        <hr style="width: 100%; border: 0; border-top: 1px solid var(--glass-border); margin: 20px 0;">
-        <div id="radio-status" class="status-badge">Lädt...</div>
+<div id="selector">
+    <div class="select-card" onclick="setSender('main')">
+        <span style="font-size: 4rem;">📻</span>
+        <h2 style="color:var(--accent)">MAINSTREAM</h2>
     </div>
-
-    <div class="main-content">
-        <img id="cover" class="cover-art" src="https://via.placeholder.com/300" alt="Cover">
-        
-        <div class="now-playing">
-            <div id="title" class="song-title">Wähle einen Stream</div>
-            <div id="artist" class="artist-name">BigTimeFM - Dein Radio</div>
-        </div>
-
-        <div class="controls">
-            <button class="play-btn" onclick="togglePlay()" id="playButton">
-                <svg id="playIcon" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
-            </button>
-        </div>
-
-        <audio id="audio-player"></audio>
+    <div class="select-card" onclick="setSender('junior')">
+        <span style="font-size: 4rem;">🎧</span>
+        <h2 style="color:var(--accent)">JUNIOR</h2>
     </div>
 </div>
 
+<div id="player-interface">
+    <button class="btn-back" onclick="resetApp()">← SENDER WECHSELN</button>
+    <div class="grid-container">
+        <div class="card cover-card">
+            <img id="cover-img" class="player-cover" src="">
+            <div style="margin-top: 20px;"><div id="bitrate-info" style="color: var(--accent); font-size: 0.8rem; border: 1px solid; padding: 4px 10px; border-radius: 10px;">- kbps</div></div>
+        </div>
+        <div class="card tracklist-card">
+            <h3 id="list-header" style="margin: 0 0 20px 0; color: var(--accent);">ZULETZT GELAUFEN</h3>
+            <div class="track-scroll" id="tracklist-container">
+                </div>
+        </div>
+    </div>
+    <div class="player-bar">
+        <button class="play-btn" onclick="togglePlay()">
+            <svg id="play-icon" viewBox="0 0 24 24" width="30"><path d="M8 5v14l11-7z"/></svg>
+        </button>
+        <div class="song-info">
+            <p id="song-title" class="song-title">Lade...</p>
+            <span id="dj-name" class="dj-name">...</span>
+        </div>
+        <div class="vol-box">
+            <span>🔈</span>
+            <input type="range" min="0" max="1" step="0.01" value="0.5" oninput="setVol(this.value)">
+            <span>🔊</span>
+        </div>
+    </div>
+</div>
+
+<audio id="player" crossorigin="anonymous"></audio>
+
 <script>
-    let currentMode = 'main';
-    const audio = document.getElementById('audio-player');
-    const playIcon = '<path d="M8 5v14l11-7z"/>';
-    const pauseIcon = '<path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/>';
+const audio = document.getElementById('player');
+const config = {
+    main: {
+        status: 'https://backend.bigtimefm.de/api/?output=radiostatus',
+        cover: 'https://backend.bigtimefm.de/api/?output=cover',
+        list: 'https://backend.bigtimefm.de/api/?output=tracklist',
+        stream: 'https://stream.bigtimefm.de/stream.mp3',
+        name: 'Mainstream'
+    },
+    junior: {
+        status: 'https://junior.bigtimefm.de/api/?output=radiostatus',
+        cover: 'https://junior.bigtimefm.de/api/?output=cover',
+        list: 'https://junior.bigtimefm.de/api/?output=tracklist', // Wird als Iframe genutzt
+        stream: 'https://stream.bigtimefm.de/btfm_junior.mp3',
+        name: 'Junior'
+    }
+};
 
-    const configs = {
-        main: {
-            stream: 'https://stream.bigtimefm.de/stream.mp3',
-            api: 'https://backend.bigtimefm.de/api/?output=radiostatus',
-            cover: 'https://backend.bigtimefm.de/api/?output=cover'
-        },
-        junior: {
-            stream: 'https://stream.bigtimefm.de/btfm_junior.mp3',
-            api: 'https://junior.bigtimefm.de/api/?output=radiostatus',
-            cover: 'https://junior.bigtimefm.de/api/?output=cover'
-        }
-    };
+let currentSender = null;
+let lastBlobUrl = null;
 
-    function switchStream(mode) {
-        currentMode = mode;
-        audio.src = configs[mode].stream;
-        document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
-        event.currentTarget.classList.add('active');
-        updateMetadata();
-        if(!audio.paused) audio.play();
+// Initialisierung beim Laden
+window.onload = () => {
+    const params = new URLSearchParams(window.location.search);
+    const sender = params.get('sender');
+    if(sender && config[sender]) {
+        initPlayer(sender);
+    }
+};
+
+function setSender(sender) {
+    const newUrl = window.location.protocol + "//" + window.location.host + window.location.pathname + '?sender=' + sender;
+    window.history.pushState({path:newUrl}, '', newUrl);
+    initPlayer(sender);
+}
+
+function resetApp() {
+    window.location.href = window.location.pathname;
+}
+
+function initPlayer(sender) {
+    currentSender = sender;
+    document.getElementById('selector').style.display = 'none';
+    document.getElementById('player-interface').style.display = 'flex';
+    document.getElementById('list-header').innerText = config[sender].name + " - ZULETZT GELAUFEN";
+    
+    // Iframe Handling für Junior
+    const listContainer = document.getElementById('tracklist-container');
+    if(sender === 'junior') {
+        listContainer.innerHTML = `<iframe id="junior-frame" src="${config.junior.list}"></iframe>`;
+    } else {
+        listContainer.innerHTML = ''; // Wird per Update-Funktion befüllt
     }
 
-    async function updateMetadata() {
-        try {
-            // Status & Titel laden
-            const statusRes = await fetch(configs[currentMode].api);
-            const statusData = await statusRes.text(); // Falls API Text/HTML liefert, sonst .json()
-            document.getElementById('radio-status').innerText = "Online: " + currentMode.toUpperCase();
-            
-            // Cover laden
-            const coverRes = await fetch(configs[currentMode].cover);
-            const coverUrl = await coverRes.text();
-            if(coverUrl.includes('http')) {
-                document.getElementById('cover').src = coverUrl;
-            }
+    audio.src = config[sender].stream;
+    audio.play().catch(() => console.log("Autoplay blockiert"));
+    
+    update();
+    setInterval(update, 10000);
+}
 
-            // Da Tracklist API oft JSON ist, hier beispielhaft für Titel:
-            // (Hinweis: CORS muss serverseitig erlaubt sein!)
-            document.getElementById('title').innerText = "Live Stream"; 
-            document.getElementById('artist').innerText = "BigTimeFM " + currentMode;
+async function update() {
+    if(!currentSender) return;
+    const cfg = config[currentSender];
+    
+    try {
+        // Status & Titel
+        const sRes = await fetch(cfg.status);
+        const sData = await sRes.json();
+        const title = sData.songtitle || "Kein Titel";
+        document.getElementById('song-title').innerText = title;
+        document.getElementById('dj-name').innerText = "👤 " + (sData.currentdj || "Auto-DJ");
+        document.getElementById('bitrate-info').innerText = (sData.bitrate || "192") + " kbps";
+        document.title = "🎶 " + title;
 
-        } catch (e) {
-            console.error("API Error", e);
+        // Cover
+        const cRes = await fetch(cfg.cover);
+        if(cRes.ok) {
+            const blob = await cRes.blob();
+            if(lastBlobUrl) URL.revokeObjectURL(lastBlobUrl);
+            lastBlobUrl = URL.createObjectURL(blob);
+            document.getElementById('cover-img').src = lastBlobUrl;
         }
-    }
 
-    function togglePlay() {
-        const btn = document.getElementById('playIcon');
-        if (audio.paused) {
-            if(!audio.src) audio.src = configs[currentMode].stream;
-            audio.play();
-            btn.innerHTML = pauseIcon;
-            document.getElementById('cover').classList.add('playing');
-        } else {
-            audio.pause();
-            btn.innerHTML = playIcon;
-            document.getElementById('cover').classList.remove('playing');
+        // Tracklist nur für Main manuell updaten (Junior ist Iframe)
+        if(currentSender === 'main') {
+            const lRes = await fetch(cfg.list);
+            const lData = await lRes.json();
+            document.getElementById('tracklist-container').innerHTML = lData.slice(0, 10).map(t => `
+                <div class="track-item">
+                    <span>🎵</span>
+                    <div style="flex:1; display:flex; justify-content:space-between">
+                        <span>${t.artist} - ${t.title}</span>
+                        <span style="color:var(--accent)">${(t.time || "").substring(0,5)}</span>
+                    </div>
+                </div>
+            `).join('');
         }
-    }
+    } catch(e) { console.error("Update Error", e); }
+}
 
-    // Auto-Update alle 30 Sekunden
-    setInterval(updateMetadata, 30000);
-    updateMetadata();
+function togglePlay() {
+    const icon = document.getElementById('play-icon');
+    if(audio.paused) {
+        audio.play();
+        icon.innerHTML = '<path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/>';
+    } else {
+        audio.pause();
+        icon.innerHTML = '<path d="M8 5v14l11-7z"/>';
+    }
+}
+
+function setVol(v) { audio.volume = v; }
 </script>
-
 </body>
 </html>
