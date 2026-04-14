@@ -101,7 +101,7 @@
 <div class="container">
     <h1>Impressum</h1>
     
-    <p>Diese Angaben gelten für alle Webpräsenzen, Subdomains und Social-Media-Kanäle (z.B. YouTube, Twitch, Discord) der <strong>Hustensaft Jugendprojekt Vereinigung</strong> sowie zugehörige Projekte wie <em>btfm-projects.de</em>.</p>
+    <p>Diese Angaben gelten für alle Webpräsenzen, Subdomains und Social-Media-Kanäle der <strong>Hustensaft Jugendprojekt Vereinigung</strong> sowie zugehörige Projekte.</p>
 
     <h2>Verantwortlich</h2>
     <div id="address-root" class="data-box">Wird geladen...</div>
@@ -117,13 +117,10 @@
     <p>Diese Hinweise gelten universell für alle unsere Online-Dienste, Team-Seiten und Profile auf Drittplattformen.</p>
 
     <h3>Datenerhebung & Login</h3>
-    <p>Die Nutzung unserer Seiten ist ohne Angabe personenbezogener Daten möglich. Ein Login-Bereich (z.B. auf team.hustensaft.org) ist ausschließlich für Teammitglieder vorgesehen. Hierbei werden nur technisch notwendige Daten zur Authentifizierung verarbeitet.</p>
-
-    <h3>Externe Dienste & Social Media</h3>
-    <p>Wir verlinken auf externe Plattformen (Twitch, YouTube, Discord). Sobald du diese Links nutzt, verlässt du unseren Verantwortungsbereich. Die jeweiligen Anbieter verarbeiten Daten nach ihren eigenen Richtlinien. Wir haben keinen Einfluss auf deren Datenerhebung.</p>
+    <p>Die Nutzung unserer Seiten ist ohne Angabe personenbezogener Daten möglich. Ein Login-Bereich ist ausschließlich für Teammitglieder vorgesehen.</p>
 
     <h3>Haftungsausschluss</h3>
-    <p>Für die Inhalte verlinkter Seiten sind ausschließlich deren Betreiber verantwortlich. Zum Zeitpunkt der Verlinkung waren keine Rechtsverstöße erkennbar. Eine permanente Inhaltskontrolle ist jedoch ohne konkrete Anhaltspunkte nicht zumutbar.</p>
+    <p>Für die Inhalte verlinkter Seiten sind ausschließlich deren Betreiber verantwortlich.</p>
 
     <div class="footer-info">
         HUSTENSAFT JUGENDPROJEKT VEREINIGUNG<br>
@@ -136,13 +133,18 @@
         n: "Maxim Getz",
         s: "Kieler Straße 476A",
         p: "24356 Neumünster",
-        m: "kontakt@hustensaft.org"
-        d: "Schleswig-Holstein Deutschland",
+        m: "kontakt@hustensaft.org", // Komma war hier wichtig!
+        d: "Schleswig-Holstein, Deutschland"
     };
 
     setTimeout(() => {
+        // Hier wird nun auch info.d (Stadt/Land) angezeigt
         document.getElementById('address-root').innerHTML = 
-            `<strong>${info.n}</strong><br>${info.s}<br>${info.p}<br><br>${info.d}<br><br>Inhaltlich Verantwortlicher: ${info.n}`;
+            `<strong>${info.n}</strong><br>` +
+            `${info.s}<br>` +
+            `${info.p}<br>` +
+            `${info.d}<br><br>` + 
+            `Inhaltlich Verantwortlicher: ${info.n}`;
         
         document.getElementById('contact-root').innerHTML = 
             `E-Mail: ${info.m}`;
