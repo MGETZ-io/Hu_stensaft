@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CREPS Control Dashboard</title>
+
+<script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+
+<style>
+body {
+    margin: 0;
+    background: #05070f;
+    font-family: "Courier New", monospace;
+    color: #d1ffe8;
+}
+
+/* HEADER */
+header {
+    display: flex;
+    justify-content: space-between;
+    padding: 14px 30px;
+    font-size: 18px;
+    border-bottom: 1px solid #1aff9c;
+}
+
+/* GRID */
+.grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 1fr 1fr;
+    height: calc(100vh - 60px);
+    gap: 10px;
+    padding: 10px;
+}
+
+/* CARD */
+.card {
+    background: rgba(0, 255, 153, 0.05);
+    border: 1px solid rgba(26, 255, 156, 0.35);
+    border-radius: 12px;
+    padding: 14px;
+    overflow: hidden;
+}
+
+/* TITLES */
+.cmd {
+    color: #1aff9c;
+    margin-bottom: 8px;
+}
+
+/* TEXT */
+.out {
+    color: #ffffff;
+    white-space: pre-wrap;
+}
+
+/* 🕒 BIG TIME */
+.bigtime {
+    font-size: 4rem;
+    font-weight: bold;
+}
+
+/* WEATHER / QUOTE */
+.small {
+    font-size: 14px;
+}
+
+/* STREAM */
+video {
+    width: 100%;
+    height: 100%;
+    max-height: none;
+    min-height: 320px;   /* 👈 deutlich größer */
+    border-radius: 10px;
+    border: 1px solid #1aff9c;
+    object-fit: cover;
+}
+/* MENSA BADGE */
+img {
+    width: 160px;
+    margin-top: 8px;
+}
+</style>
+
+</head>
+
+<body>
+
+<header>
+    <div>CREPS CONTROL CENTER</div>
+    <div id="clockTop"></div>
+</header>
+
+<div class="grid">
+
+    <!-- 🕒 TOP LEFT: CLOCK -->
+    <div class="card">
+        <div class="cmd">> time --berlin</div>
+        <div class="bigtime" id="bigTime"></div>
+        <div class="out" id="dateOut"></div>
+    </div>
+
+    <!-- 🌤️ TOP RIGHT: WEATHER + QUOTE + MENSA -->
+    <div class="card">
+        <div class="cmd">> weather --neumuenster</div>
+        <div class="out" id="weatherOut">loading...</div>
+
+        <div class="cmd" style="margin-top:10px;">> quote --daily</div>
+        <div class="out small" id="quoteOut">loading...</div>
+
+        <div class="cmd" style="margin-top:10px;">> status --mensa</div>
+        <img src="https://status-labs.hustensaft.org/api/badge/2/status">
+    </div>
+
+    <!-- 📰 BOTTOM LEFT: NEWS -->
+    <div class="card">
+        <div class="cmd">> news --tagesschau</div>
+        <div class="out" id="newsOut">loading...</div>
+    </div>
+
+    <!-- 📺 BOTTOM RIGHT: STREAM -->
+    <div class="card">
+        <div class="cmd">> stream --tagesschau-live</div>
+        <video id="live" controls autoplay muted></video>
+    </div>
+
+</div>
+
+<script>
+
+// 🕒 CLOCK
+function updateTime() {
+    const now = new Date();
+
+    const time = new Intl.DateTimeFormat('de-DE', {
+        timeZone: 'Europe/Berlin',
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit'
+    }).format(now);
+
+    const date = new Intl.DateTimeFormat('de-DE', {
+        timeZone: 'Europe/Berlin',
+        weekday: 'long',
+        day: 'numeric',
+        month: 'long',
+        year: 'numeric'
+    }).format(now);
+
+    document.getElementById("clockTop").innerText = time;
+    document.getElementById("bigTime").innerText = time;
+    document.getElementById("dateOut").innerText = date;
+}
+setInterval(updateTime, 1000);
+updateTime();
+
+
+// 📰 NEWS
+async function loadNews() {
+    try {
+        const res = await fetch("https://www.tagesschau.de/api2u/news/");
+        const data = await res.json();
+
+        document.getElementById("newsOut").innerText =
+            data.news.slice(0, 6).map(n => `• ${n.title}`).join("\n");
+
+    } catch {
+        document.getElementById("newsOut").innerText = "news offline";
+    }
+}
+loadNews();
+setInterval(loadNews, 600000);
+
+
+// 🌤️ WEATHER
+async function loadWeather() {
+    try {
+        const res = await fetch(
+            "https://api.open-meteo.com/v1/forecast?latitude=54.07&longitude=9.98&current_weather=true"
+        );
+        const data = await res.json();
+
+        const w = data.current_weather;
+
+        document.getElementById("weatherOut").innerText =
+            `${w.temperature}°C | Wind ${w.windspeed} km/h`;
+
+    } catch {
+        document.getElementById("weatherOut").innerText = "weather error";
+    }
+}
+loadWeather();
+setInterval(loadWeather, 300000);
+
+
+// ✨ QUOTE (ZenQuotes)
+async function loadQuote() {
+    try {
+        const res = await fetch("https://zenquotes.io/api/random");
+        const data = await res.json();
+
+        document.getElementById("quoteOut").innerText =
+            `"${data[0].q}" - ${data[0].a}`;
+
+    } catch {
+        document.getElementById("quoteOut").innerText =
+            "Stay focused.";
+    }
+}
+loadQuote();
+setInterval(loadQuote, 30000);
+
+
+// 📺 STREAM
+const video = document.getElementById("live");
+const url = "https://tagesschau-live.ard-mcdn.de/tagesschau/live/hls/de/master.m3u8";
+
+if (Hls.isSupported()) {
+    const hls = new Hls();
+    hls.loadSource(url);
+    hls.attachMedia(video);
+    hls.on(Hls.Events.MANIFEST_PARSED, () => video.play());
+} else {
+    video.src = url;
+}
+
+document.body.addEventListener("click", () => {
+    video.muted = false;
+});
+
+</script>
+
+</body>
+</html>
